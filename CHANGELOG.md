@@ -2,6 +2,13 @@
 
 V01-V03 are the original learning milestones, not semantic version releases. Their original dates were not recorded.
 
+## 2026-11-21 - Progress clarification
+
+- Added completed-versus-remaining summaries to all five technical chapters.
+- Clarified that the current guide stage is week 2, that stage 03/04 documents are plans, and that chapter 05 is supplementary work.
+- Clarified that requirements directories do not yet contain implemented scripts or service units.
+- Excluded PDF copies of the private guide and task checklist from version control.
+
 ## 2026-11-21 - Portfolio organization
 
 ### Changed

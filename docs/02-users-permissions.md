@@ -2,6 +2,14 @@
 
 [Back to project overview](../README.md)
 
+## At a glance
+
+| State | Meaning |
+| --- | --- |
+| Already documented | Accounts, groups, sudo checks, directory exercises, and the SSH allowlist edit are documented. |
+| Remaining | Reconcile permissions, prove allowed/denied access, implement key login, SSH hardening, and UFW. |
+| Stage status | Partially implemented; current guide stage. |
+
 ## Goal and status
 
 Separate administrative access from project work and apply explicit ownership and permissions. Users, groups, sudo checks, and an SSH allowlist are documented. Key-based login, effective SSH hardening, and UFW validation are pending.

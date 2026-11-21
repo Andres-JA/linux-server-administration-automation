@@ -2,6 +2,14 @@
 
 [Back to project overview](../README.md)
 
+## At a glance
+
+| State | Meaning |
+| --- | --- |
+| Already documented | Filesystem exercises and 13 original captures are documented. |
+| Remaining | Reconcile final directory ownership/modes with the shared-development policy. |
+| Stage status | Supplementary work; this is not week 5. |
+
 ## Goal and status
 
 Organize service data, inspect storage, and test Linux access controls. This supplementary chapter preserves the original filesystem milestone alongside the guide's four core stages.

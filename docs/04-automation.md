@@ -2,6 +2,14 @@
 
 [Back to project overview](../README.md)
 
+## At a glance
+
+| State | Meaning |
+| --- | --- |
+| Already documented | This planning document and artifact requirements exist. No scripts or units have been delivered. |
+| Remaining | Implement three scripts, two services, two timers, and a verified backup restore. |
+| Stage status | Implementation pending. |
+
 **Status: planned.** Scripts, timers, backups, and restoration tests have not yet been delivered or validated.
 
 ## Goal

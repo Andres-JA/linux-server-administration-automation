@@ -2,6 +2,14 @@
 
 [Back to project overview](../README.md)
 
+## At a glance
+
+| State | Meaning |
+| --- | --- |
+| Already documented | VM installation and remote SSH login are documented. |
+| Remaining | Complete baseline, network, timezone, package-update, and SSH-status evidence. |
+| Stage status | Existing setup; verification remaining. |
+
 ## Goal and status
 
 Deploy a Linux VM and administer it remotely from Windows. The existing lab records successful SSH access. Additional baseline captures are needed to satisfy the full guide checklist.

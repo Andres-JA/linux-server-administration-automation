@@ -2,6 +2,14 @@
 
 [Back to project overview](../README.md)
 
+## At a glance
+
+| State | Meaning |
+| --- | --- |
+| Already documented | This planning document exists. No Nginx or custom-service results are recorded. |
+| Remaining | Implement Nginx, HTTP tests, process/log inspection, controlled recovery, and the monitor service. |
+| Stage status | Implementation pending. |
+
 **Status: planned.** Nginx deployment, service recovery, and custom systemd execution are not currently evidenced.
 
 ## Goal

@@ -34,6 +34,10 @@ The reference guide uses Ubuntu 24.04, NAT + Host-only, and `/srv/lab`. This rep
 
 ## Documentation and progress
 
+**Current guide stage: week 2, partially complete.** Week 1 setup exists with verification evidence remaining. Weeks 3 and 4 are implementation plans. Chapter 05 preserves earlier filesystem work; it is not a fifth week.
+
+The presence of a document or delivery directory does not mean its implementation is complete: `scripts/` and `configs/` currently contain requirements README files.
+
 | Stage | Scope | Status |
 | --- | --- | --- |
 | [01 - Server setup](docs/01-server-setup.md) | VM, networking, remote access | Existing setup documented; full baseline checks remain |
