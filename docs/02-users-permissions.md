@@ -1,133 +1,90 @@
-# V02 — User Management
+# 02 - Users, Permissions and Security
 
-## Escenario
+[Back to project overview](../README.md)
 
-El cliente necesita configurar accesos para su equipo en el servidor.
-Tres roles diferentes, cada uno con permisos distintos sobre
-los archivos del proyecto.
+## Goal and status
 
-## Objetivo
+Separate administrative access from project work and apply explicit ownership and permissions. Users, groups, sudo checks, and an SSH allowlist are documented. Key-based login, effective SSH hardening, and UFW validation are pending.
 
-Crear la estructura de usuarios, grupos y permisos de `/srv/project`
-para que el equipo trabaje en el mismo proyecto sin pisarse,
-y restringir el acceso SSH a los perfiles de administración.
+## Recorded accounts
 
-## Tareas completadas
+| Account | Primary group | Supplementary groups | Intended access |
+| --- | --- | --- | --- |
+| `devops` | Existing installation account | Reconfirm current memberships | Base administrator and original project owner |
+| `dev` | `dev` | `developers` | Development work without sudo |
+| `cloud` | `cloud` | `developers` | Project work without sudo |
+| `admin` | `admin` | `admins`, `sudo` | Administration |
 
-- [x] Crear los grupos `developers` y `admins`
-- [x] Crear los usuarios `dev`, `cloud` y `admin` con su directorio home
-- [x] Asignar grupos secundarios con `usermod -aG`
-- [x] Crear la estructura `/srv/project/` con `src/`, `config/`, `logs/` y `backups/`
-- [x] Aplicar permisos 775 y activar el bit SGID en `src/`
-- [x] Verificar que `dev` no tiene sudo y `admin` sí
-- [x] Restringir el acceso SSH con `AllowUsers` y confirmar que el servicio sigue activo
-- [x] Listar los usuarios reales del sistema con `awk`
+These names differ from the guide's `developer`, `operator`, and `auditor`. A read-only audit role and a narrowly scoped operator sudo policy have not been demonstrated.
 
-## Usuarios configurados
-
-| Usuario | Grupo principal | Grupos secundarios | Sudo | Rol |
-|---------|----------------|-------------------|------|-----|
-| dev | dev | developers | No | Desarrollador |
-| cloud | cloud | developers | No | Cloud Engineer |
-| admin | admin | admins, sudo | Sí | Administrador |
-
-> `devops` es la cuenta base creada en [V01 Server Setup](01-server-setup.md).
-> No forma parte de esta versión, pero es la dueña de `/srv/project/`
-> y mantiene acceso por SSH como administrador del servidor.
-
-## Estructura de directorios creada
-
-`/srv` es la ruta reservada en la jerarquía FHS para los datos
-específicos de los servicios del sistema. `/srv/project/` organiza
-el proyecto del cliente dentro de ese estándar.
+## Original shared directory model
 
 ```text
-/srv/project/                 chown devops:developers
-├── src/                     grupo developers, SGID activado
-├── config/                  grupo developers
-├── logs/                    solo el dueño puede escribir
-└── backups/                 grupo developers
+/srv/project/        devops:developers, mode 775
+|-- src/             mode 775 plus setgid (2775)
+|-- config/
+|-- logs/            mode 755
+`-- backups/
 ```
 
-## Permisos aplicados
+The original notes record a group-inheritance exercise using two accounts. Setgid makes new entries inherit the directory's group; it does not itself grant group write permission. Umask and file modes still matter.
 
-| Directorio | Permisos | Significado |
-|------------|----------|-------------|
-| `/srv/project/` | 775 + `chown devops:developers` | Grupo puede leer y escribir |
-| `/srv/project/src/` | 775 + SGID (`chmod g+s`) | Archivos heredan grupo `developers` |
-| `/srv/project/logs/` | 755 | Solo el dueño escribe |
+Mode `2775` also permits access to other local users, making it broader than the guide's `2770` engineering directory. The [later filesystem exercise](05-filesystem.md) records `src/` as `devops:devops` with mode `755`, changing the collaboration policy. Recheck the VM and settle the final policy before deployment.
 
-## Comandos clave aprendidos
+## Commands used in the exercises
 
-| Comando | Descripción |
-|---------|-------------|
-| `useradd -m -s /bin/bash -c "comentario" user` | Crear usuario modo producción |
-| `getent passwd usuario` | Info completa del usuario |
-| `getent group grupo` | Info completa del grupo |
-| `id usuario` | UID, GID y grupos del usuario |
-| `usermod -aG grupo1,grupo2 usuario` | Asignar múltiples grupos |
-| `chown -R usuario:grupo directorio` | Cambiar dueño recursivo |
-| `chmod -R 775 directorio` | Permisos recursivos |
-| `chmod g+s directorio` | Activar SGID |
-| `awk -F: '$3 >= 1000' /etc/passwd` | Listar usuarios reales |
+| Command | Purpose |
+| --- | --- |
+| `groupadd developers` | Create the project group |
+| `useradd -m -s /bin/bash -c "Development account" dev` | Create a home directory and Bash account |
+| `usermod -aG developers dev` | Append supplementary group membership |
+| `id dev` | Inspect UID and groups |
+| `getent group developers` | Inspect the group entry |
+| `chown devops:developers /srv/project` | Assign project ownership |
+| `chmod g+s /srv/project/src` | Enable directory group inheritance |
+| `awk -F: '$3 >= 1000' /etc/passwd` | Original UID-based account listing |
 
-## Diferencia entre adduser y useradd
+These are references from an existing lab, not an idempotent provisioning script. Inspect existing accounts and paths before repeating creation commands. Apply directory and file modes separately rather than recursively making every file executable.
 
-`adduser` es interactivo y amigable, ideal para aprender.
-`useradd` es el comando de bajo nivel, más rápido y usado
-en scripts de automatización en producción.
+On Ubuntu, `adduser` provides an interactive workflow; `useradd` provides lower-level account options. This exercise used `useradd`. The original UID filter may include special accounts such as `nobody`; the planned report needs a bounded UID range and an explanation of its limitations.
 
-## Verificación de privilegios sudo
+## Sudo verification
 
-Los permisos de `sudo` no se aplican en el momento. El usuario tiene que
-cerrar la sesión y volver a entrar para que el sistema relea sus grupos
-actualizados. La captura de evidencia confirma que `dev` recibe
-`dev is not in the sudoers file` mientras que `admin` sí opera
-como administrador.
+The capture shows `dev` denied sudo and `admin` using sudo. After changing supplementary groups, validate with a fresh login session. Other sudo policy changes may take effect without reconnecting.
 
-## Restricción SSH aplicada
+## SSH allowlist
 
-Solo `devops` (cuenta base) y `admin` pueden conectarse por SSH.
-Configurado en `/etc/ssh/sshd_config` con la directiva `AllowUsers`.
+The original capture shows this directive in `/etc/ssh/sshd_config`:
 
-Esto evita que los usuarios de solo trabajo (`dev` y `cloud`)
-tengan acceso remoto al servidor.
+```text
+AllowUsers devops admin
+```
 
-## Lo que aprendí
+A separate capture records SSH running. Service health alone does not prove the effective allowlist or denied login behavior. Capture `sudo sshd -t`, `sudo sshd -T`, and permitted/denied login tests before marking the policy fully validated.
 
-El SGID en directorios resuelve uno de los problemas más
-comunes en equipos: que los archivos creados por diferentes
-usuarios tengan permisos inconsistentes. En lugar de arreglar
-permisos manualmente, el bit SGID lo hace automáticamente.
+The existing remote-login screenshot uses password authentication. Key-only login, disabled root login, and restricted firewall rules are not yet evidenced.
 
-La restricción de SSH por usuario es una de las primeras
-cosas que se configura en servidores de producción.
+## Evidence
 
-Un detalle que costó tiempo: dar de alta a un usuario en el grupo
-`sudo` no activa el privilege en la sesión actual. Hay que
-reconectarse, y por eso conviene verificar con una sesión nueva
-y no asumir que el comando falló.
+![Created developers and admins groups](../screenshots/users-01-groups-created.jpeg)
 
-## Evidencia
+![Accounts and their IDs](../screenshots/users-02-users-and-ids.jpeg)
 
-### Grupos y usuarios creados
+![Original ownership and directory permissions](../screenshots/users-03-project-structure.jpeg)
 
-![Grupos developers y admins creados](../screenshots/users-01-groups-created.jpeg)
-![Usuarios dev, cloud y admin con sus IDs](../screenshots/users-02-users-and-ids.jpeg)
+![Developer and administrator sudo checks](../screenshots/users-04-sudo-privileges.jpeg)
 
-### Estructura de directorios y permisos
+![SSH AllowUsers configuration](../screenshots/users-05-ssh-allowusers-config.jpeg)
 
-![Estructura de /srv/project con ls -la](../screenshots/users-03-project-structure.jpeg)
+![SSH service status](../screenshots/users-06-ssh-service-status.jpeg)
 
-### Privilegios sudo
+![Original UID-based account listing](../screenshots/users-07-real-users.jpeg)
 
-![dev sin sudo frente a admin con sudo](../screenshots/users-04-sudo-privileges.jpeg)
+## Remaining acceptance checks
 
-### Seguridad SSH
-
-![Directiva AllowUsers en sshd_config](../screenshots/users-05-ssh-allowusers-config.jpeg)
-![Servicio SSH sigue corriendo tras el cambio](../screenshots/users-06-ssh-service-status.jpeg)
-
-### Administración
-
-![Usuarios reales del sistema con awk](../screenshots/users-07-real-users.jpeg)
+- Resolve shared-write versus owner-write permissions; capture allowed and denied operations.
+- Add the guide's read-only audit role, or document and validate an equivalent model.
+- Test Ed25519 key login in a second session before disabling password authentication.
+- Validate SSH syntax/effective settings, reload, and reconnect.
+- Apply UFW rules for the chosen management subnet and verify access.
+- After Nginx exists, optionally allow only its restart command to an operator and test denial of unrelated sudo commands.

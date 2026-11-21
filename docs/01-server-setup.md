@@ -1,62 +1,70 @@
-# V01 — Server Setup
+# 01 - Ubuntu Server Setup
 
-## Objetivo
+[Back to project overview](../README.md)
 
-Instalar y configurar un servidor Ubuntu Server desde cero
-en una máquina virtual, dejándolo listo para administración remota.
+## Goal and status
 
-## Entorno
+Deploy a Linux VM and administer it remotely from Windows. The existing lab records successful SSH access. Additional baseline captures are needed to satisfy the full guide checklist.
 
-| Parámetro | Valor |
-|-----------|-------|
-| Hypervisor | VirtualBox  |
-| OS | Ubuntu Server 26.04 LTS |
-| RAM | 2048 MB |
-| Disco | 25 GB |
-| Red | Adaptador puente |
-| Usuario | devops |
+## Recorded environment
 
-## Tareas completadas
+| Component | Value |
+| --- | --- |
+| Hypervisor | VirtualBox |
+| Guest OS | Ubuntu Server 26.04 LTS, visible in the SSH login banner |
+| RAM | 2048 MB, recorded in the original notes |
+| Virtual disk | 25 GB, recorded in the original notes |
+| Networking | Bridged adapter, recorded in the original notes |
+| Hostname | `linux-server` |
+| Administrative account | `devops` |
+| SSH client | Windows PowerShell |
 
-- [x] Crear máquina virtual en VirtualBox
-- [x] Instalar Ubuntu Server 26.04 LTS
-- [x] Configurar usuario `devops`
-- [x] Cambiar hostname a `linux-server`
-- [x] Actualizar paquetes del sistema
-- [x] Habilitar OpenSSH durante la instalación
-- [x] Conectarse remotamente por SSH
+The guide's Ubuntu 24.04 and NAT + Host-only configuration is a reference baseline. It has not been substituted for the actual environment. Private IP addresses in screenshots are historical lab values.
 
-## Comandos aprendidos
+## Work recorded
 
-| Comando | Descripción |
-|---------|-------------|
-| `uname -a` | Información del sistema operativo |
-| `df -h` | Uso del disco |
-| `free -h` | Uso de RAM |
-| `ip addr show` | Ver dirección IP |
-| `sudo apt update && sudo apt upgrade -y` | Actualizar paquetes |
-| `hostnamectl set-hostname nombre` | Cambiar hostname |
-| `ssh usuario@ip` | Conectarse por SSH |
+1. Created the VirtualBox VM and installed Ubuntu Server.
+2. Created `devops` and configured the hostname.
+3. Updated packages, according to the original notes.
+4. Installed OpenSSH during setup.
+5. Connected from Windows using `ssh devops@<VM_IP>`.
 
-## Problema encontrado
+The captures demonstrate the VM, initial terminal commands, and remote login. Package-update completion and a full hardware/network baseline need additional explicit evidence.
 
-Durante la instalación, la red no tomó IP automáticamente.
-Solución: verificar que el adaptador esté en modo Bridge
-y no NAT en la configuración de VirtualBox.
+## Command reference
 
-## Evidencia
+These commands summarize the original exercises; replace `<VM_IP>` with the current guest address.
 
-### VM creada en VirtualBox
-![VM creada](../screenshots/setup-01-vm-configuration.png)
+| Command | Purpose |
+| --- | --- |
+| `uname -a` | Inspect kernel and system information |
+| `df -h` | Inspect filesystem capacity |
+| `free -h` | Inspect memory usage |
+| `ip addr show` | Identify interface addresses |
+| `sudo apt update && sudo apt upgrade -y` | Refresh package metadata and upgrade packages |
+| `sudo hostnamectl set-hostname linux-server` | Set the guest hostname |
+| `ssh devops@<VM_IP>` | Open a remote session from Windows |
 
-### Primer login en el servidor
-![Primer login](../screenshots/setup-02-initial-commands.png)
+## Troubleshooting
 
-### Conexión SSH desde PC local
-![SSH](../screenshots/setup-03-ssh-login.png)
+**Symptom:** the original notes report that the VM did not obtain a usable address during setup.
 
-## Lo que se aprendio
+**Action recorded:** changed the VirtualBox adapter from NAT to bridged mode.
 
-SSH es el estándar para administrar servidores en producción.
-Nadie entra directamente a la pantalla del servidor.
-El modo Bridge en VirtualBox es clave para simular una red real.
+**Observed result:** Windows subsequently connected to the guest over SSH. The original notes do not establish the underlying DHCP failure; bridged mode is the workaround used in this lab.
+
+## Evidence
+
+![VirtualBox VM configuration](../screenshots/setup-01-vm-configuration.png)
+
+![Initial terminal commands](../screenshots/setup-02-initial-commands.png)
+
+![Successful SSH login from Windows](../screenshots/setup-03-ssh-login.png)
+
+## Remaining validation
+
+- Capture `hostnamectl`, `cat /etc/os-release`, `ip -br addr`, `ip route`, `free -h`, and `df -h /` as a current baseline.
+- Record vCPU count, adapter settings, and a baseline VirtualBox snapshot.
+- Confirm the management network. If adopting NAT + Host-only, capture the new configuration and retest access.
+- Verify `systemctl is-active ssh`, package update completion, and `timedatectl` with the intended timezone.
+- Capture `whoami` and `hostname` inside a fresh remote session.

@@ -1,78 +1,48 @@
-﻿# Changelog
+# Changelog
 
-Todos los cambios relevantes de este proyecto se registran en este archivo.
+V01-V03 are the original learning milestones, not semantic version releases. Their original dates were not recorded.
 
-El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/)
-y el proyecto se versiona con [Versionado Semántico](https://semver.org/lang/es/).
+## 2026-11-21 - Portfolio organization
 
-## [V03] — Filesystem
+### Changed
 
-### Agregado
+- Moved setup, account, and filesystem notes into `docs/`.
+- Consolidated 23 screenshots into `screenshots/` with English names and stage prefixes, preserving original image contents.
+- Rewrote public documentation in English with demonstrated skills, evidence links, actual environment differences, and explicit status.
+- Preserved Ubuntu 26.04, bridged networking, existing accounts, and `/srv/project` paths.
+- Explained the differing permissions between the account and filesystem exercises.
 
-- Estructura `/srv/project/` extendida con `src/`, `config/`, `logs/`, `backups/` y `tmp/`
-- Permisos diferenciados por directorio según el rol que accede: `755`, `750`, `700` y `1777`
-- Sticky bit en `/srv/project/tmp`
-- Enlace simbólico `/srv/project/config/app.conf` → `/etc/project/app.conf`
-- Uso avanzado de `find`: por nombre, fecha, permisos y tamaño
-- Análisis de disco con `du`, `df -hT` y `df -i`
-- Puntos de montaje revisados con `findmnt` y `lsblk`
-- Documentación interna `README-structure.txt` en el servidor
+### Added
 
-### Aprendido
+- Planned-stage documents for services/processes and automation/recovery.
+- Delivery requirements under `scripts/`, `configs/ssh/`, and `configs/systemd/`.
+- Ignore rules for private planning, credentials, archives, and runtime output.
 
-- Filesystem Hierarchy Standard (FHS)
-- Diferencia entre sticky bit y SGID
-- Cómo y por qué usar symlinks en producción
-- Análisis de inodos con `df -i`
+## V03 - Filesystem operations
 
-## [V02] — User Management
+- Extended `/srv/project/` with source, configuration, logs, backups, and temporary directories.
+- Applied modes including `755`, `750`, `700`, and `1777`.
+- Captured denied deletion of another user's file in a sticky-bit directory.
+- Linked project configuration to `/etc/project/app.conf`.
+- Practiced file searches, disk/inode usage, and mount inspection.
+- Created an on-server structure reference and 13 screenshots.
 
-### Agregado
+The later source ownership differs from V02's shared model; reconciliation is pending.
 
-- Escenario de negocio con tres roles: desarrollador, cloud engineer y administrador
-- Grupos `developers` y `admins` creados con `groupadd`
-- Usuarios `dev`, `cloud` y `admin` creados con `useradd -m -s /bin/bash -c`
-- Asignación de grupos secundarios con `usermod -aG`
-- Estructura `/srv/project/` con `src/`, `config/`, `logs/` y `backups/`
-- Permisos `775` sobre el proyecto y `755` sobre `logs/`
-- Bit SGID en `src/` con `chmod g+s`
-- Prueba de herencia de grupo creando archivos con dos usuarios distintos
-- Verificación de privilegios sudo: `dev` sin acceso y `admin` con acceso
-- Restricción de acceso SSH con `AllowUsers devops admin` en `/etc/ssh/sshd_config`
-- Confirmación de que el servicio SSH sigue activo tras el cambio
-- Evidencia visual en `screenshots/` (7 capturas, renombradas
-  con nomenclatura `NN-descripcion.jpeg`)
+## V02 - User management
 
-### Documentación
+- Created `developers` and `admins` groups and `dev`, `cloud`, and `admin` accounts.
+- Assigned supplementary groups and organized `/srv/project/`.
+- Applied shared directory permissions and setgid; the original notes record group-inheritance checks.
+- Captured sudo denial for `dev` and sudo access for `admin`.
+- Edited SSH configuration with `AllowUsers devops admin` and captured the active service.
+- Captured a UID-based account listing and seven screenshots in total.
 
-- README de V02 con tablas de usuarios, permisos y comandos clave
-- Comparación entre `adduser` y `useradd` y criterio de uso de cada uno
-- Sección "Lo que aprendí" sobre SGID y restricción de acceso remoto
+Effective SSH policy, key-only login, and firewall checks remain pending.
 
-### Notas
+## V01 - Server setup
 
-- El bit SGID en `src/` garantiza que los archivos hereden el grupo
-  `developers` sin importar qué usuario los cree, evitando tener que
-  corregir permisos manualmente
-- `logs/` queda en `755` para que solo su dueño escriba y el grupo
-  únicamente pueda leer los registros
-
-## [V01] — Server Setup
-
-### Agregado
-
-- Instalación de Ubuntu Server 26.04 LTS en VirtualBox
-- Configuración inicial: usuario `devops`, hostname `linux-server`
-  y actualización de paquetes
-- OpenSSH habilitado durante la instalación
-- Conexión SSH exitosa desde el PC local
-- Documentación completa con evidencia visual
-
-### Solucionado
-
-- El adaptador de red en modo NAT no asignaba IP al servidor.
-  Cambiado a modo Bridge en la configuración de VirtualBox
-
-### Documentación
-
-- README de V01 con el entorno, las tareas completadas y los comandos aprendidos
+- Installed Ubuntu Server 26.04 LTS in VirtualBox with `devops` and hostname `linux-server`.
+- Recorded initial package preparation and OpenSSH installation.
+- Connected from Windows using SSH and captured three screenshots.
+- Changed NAT to bridged networking after an address/connectivity issue. SSH subsequently succeeded; the underlying DHCP cause was not established.

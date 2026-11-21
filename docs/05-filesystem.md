@@ -1,120 +1,106 @@
-﻿# V03 — Filesystem
+# 05 - Filesystem Operations
 
-## Escenario
+[Back to project overview](../README.md)
 
-El cliente necesita una estructura de directorios estandarizada en el servidor antes de empezar a desplegar la aplicación. Como sysadmin definí la estructura, asigné permisos por rol y documenté el propósito de cada directorio.
+## Goal and status
 
-## Estructura creada
+Organize service data, inspect storage, and test Linux access controls. This supplementary chapter preserves the original filesystem milestone alongside the guide's four core stages.
+
+## Recorded layout
+
+The later filesystem notes describe this model:
 
 ```text
 /srv/project/
-├── src/       → código fuente (devops:devops 755)
-│   ├── app/
-│   ├── tests/
-│   └── scripts/
-├── config/    → configuraciones (root:devops 750)
-├── logs/      → logs aplicación (root:devops 755/644)
-├── backups/   → backups (root:root 700)
-└── tmp/       → temporales (sticky bit 1777)
+|-- src/               devops:devops, 755
+|   |-- app/
+|   |-- tests/
+|   `-- scripts/
+|-- config/            root:devops, 750
+|-- logs/              directory 755, files 644
+|-- backups/           root:root, 700
+`-- tmp/               root:root, 1777
 
-/etc/project/          → configuración global del sistema
-/var/log/project/      → logs del sistema del proyecto
-/opt/project/bin/      → binarios del proyecto
+/etc/project/          System configuration
+/var/log/project/      Project service logs
+/opt/project/bin/      Project executables
 ```
 
-## Por qué cada directorio tiene esos permisos
+| Directory | Recorded policy | Purpose |
+| --- | --- | --- |
+| `src/` | Owner writes; group and others read/traverse | Owner-managed source tree |
+| `config/` | Root writes; devops group reads/traverses | Restricted configuration |
+| `logs/` | Directory 755, files 644 | Owner writes; other accounts read |
+| `backups/` | Root-only access | Restrict archive access |
+| `tmp/` | World-writable with sticky bit | Shared temporary files with restricted deletion |
 
-| Directorio | Permisos | Razón |
-|------------|----------|-------|
-| src/ | `755 devops:devops` | El dueño administra y escribe; el resto del equipo solo lee |
-| config/ | `750 root:devops` | Solo el administrador modifica configuraciones |
-| logs/ | `755` dir / `644` archivos | El sistema escribe; los usuarios solo leen |
-| backups/ | `700 root:root` | Nadie excepto root toca los backups |
-| tmp/ | `1777` sticky bit | Cualquiera escribe, pero nadie borra archivos ajenos |
+This changes the earlier `developers` group and setgid collaboration model. Continued shared developer write access is not demonstrated. Recheck live ownership and modes, and choose the final policy before deployment.
 
-## Conceptos aplicados
+## Observed access-control test
 
-### Sticky bit
+The sticky-bit capture shows `devops` creating a file under `/srv/project/tmp`, then a temporary `testuser` trying to remove it. Removal fails with `Operation not permitted`. The administrator subsequently removes the test account.
 
-Activo en `/srv/project/tmp`. Permite que cualquier usuario cree archivos en esa carpeta, pero solo el dueño del archivo puede eliminarlo. Exactamente como funciona `/tmp` en Linux.
+The sticky bit restricts deletion and renaming to the file owner, directory owner, or a privileged account. It does not make a world-writable directory private or prevent changes to writable file contents.
 
-### Enlaces simbólicos
+## Symlink and filesystem placement
 
-`/srv/project/config/app.conf` es un symlink que apunta a `/etc/project/app.conf`. Mantiene las configuraciones en `/etc` (estándar de Linux) pero accesibles desde el proyecto.
+The lab creates `/srv/project/config/app.conf` as a symlink to `/etc/project/app.conf`, keeping configuration in `/etc` with a project-local reference.
 
-### Filesystem Hierarchy Standard (FHS)
+The exercises use `/srv` for service data, `/etc` for configuration, `/var/log` for logs, and `/opt` for application files. Temporary-file cleanup depends on host policy; a path under `/tmp` alone does not prove deletion on every reboot.
 
-Linux tiene un estándar que define para qué sirve cada directorio raíz. Seguirlo hace el servidor predecible para cualquier sysadmin que llegue después.
+## Command reference
 
-| Directorio | Propósito estándar |
-|------------|-------------------|
-| /srv/ | Datos de servicios del servidor |
-| /etc/ | Archivos de configuración |
-| /var/log/ | Logs del sistema |
-| /opt/ | Software de terceros |
-| /tmp/ | Archivos temporales (se borra al reiniciar) |
+| Command | Purpose |
+| --- | --- |
+| `tree -p /srv/project` | Inspect tree and permissions |
+| `du -sh /srv/project/*` | Summarize directory space usage |
+| `df -hT` | Inspect capacity and filesystem types |
+| `df -i` | Inspect inode usage |
+| `find /srv/project -type f -name '*.py'` | Find Python files |
+| `find /srv/project -mtime -1` | Find recently modified entries |
+| `find /srv/project -type f -perm 644` | Find files with an exact mode |
+| `find /srv/project -type f -size +1M` | Find files larger than 1 MiB |
+| `readlink -f /srv/project/config/app.conf` | Resolve the symlink |
+| `findmnt` | Inspect active mount points |
+| `lsblk` | Inspect block devices |
+| `chmod 1777 /srv/project/tmp` | Apply shared temporary-directory permissions |
 
-## Comandos aprendidos
+Mount screenshots document inspection of mounts and `/etc/fstab`; they do not establish a new persistent mount or a reboot test.
 
-| Comando | Descripción |
-|---------|-------------|
-| `mkdir -p dir/{sub1,sub2,sub3}` | Crear árbol completo de una vez |
-| `tree -p directorio` | Ver árbol con permisos |
-| `du -sh directorio/*` | Tamaño de cada subdirectorio |
-| `df -hT` | Filesystems montados con tipo |
-| `df -i` | Inodos disponibles |
-| `find /ruta -name "*.py" -type f` | Buscar por nombre y tipo |
-| `find /ruta -mtime -1` | Archivos modificados últimas 24 h |
-| `find /ruta -perm 644` | Buscar por permisos |
-| `find /ruta -size +1M` | Buscar por tamaño |
-| `ln -s origen destino` | Crear enlace simbólico |
-| `readlink -f symlink` | Ver a dónde apunta el symlink |
-| `findmnt` | Ver puntos de montaje activos |
-| `lsblk` | Ver dispositivos de bloque |
-| `chmod 1777 directorio` | Activar sticky bit |
+## Evidence
 
-## Evidencia
+### Filesystem exploration
 
-### Exploración del filesystem
+![Linux root listing](../screenshots/filesystem-01-linux-root.png)
 
-![Raíz de Linux](../screenshots/filesystem-01-linux-root.png)
+![Mounted filesystems](../screenshots/filesystem-02-mounted-filesystems.png)
 
-![Filesystems montados](../screenshots/filesystem-02-mounted-filesystems.png)
+### Layout and permissions
 
-### Estructura creada
+![Project directory tree](../screenshots/filesystem-03-project-tree.png)
 
-![Árbol del proyecto](../screenshots/filesystem-03-project-tree.png)
+![Directory ownership and modes](../screenshots/filesystem-04-directory-permissions.png)
 
-![Permisos por directorio](../screenshots/filesystem-04-directory-permissions.png)
+![Sticky-bit deletion denied](../screenshots/filesystem-05-sticky-bit.png)
 
-### Conceptos aplicados
+![Configuration symlink](../screenshots/filesystem-06-symlinks.png)
 
-![Sticky bit en acción](../screenshots/filesystem-05-sticky-bit.png)
+### Search and storage
 
-![Symlinks](../screenshots/filesystem-06-symlinks.png)
+![File search, first capture](../screenshots/filesystem-07-find-commands-1.png)
 
-### Búsqueda de archivos
+![File search, second capture](../screenshots/filesystem-07-find-commands-2.png)
 
-![Comandos find (1/2)](../screenshots/filesystem-07-find-commands-1.png)
+![Directory disk usage](../screenshots/filesystem-08-disk-usage.png)
 
-![Comandos find (2/2)](../screenshots/filesystem-07-find-commands-2.png)
+![Mount and fstab inspection, first capture](../screenshots/filesystem-09-fstab-mount-1.png)
 
-### Administración del disco
+![Mount and fstab inspection, second capture](../screenshots/filesystem-09-fstab-mount-2.png)
 
-![Uso de disco](../screenshots/filesystem-08-disk-usage.png)
+![Original on-server structure reference](../screenshots/filesystem-10-structure-reference.png)
 
-### Sistema y montaje
+![Final tree from the exercise](../screenshots/filesystem-11-final-structure.png)
 
-![fstab y montaje (1/2)](../screenshots/filesystem-09-fstab-mount-1.png)
+## Remaining validation
 
-![fstab y montaje (2/2)](../screenshots/filesystem-09-fstab-mount-2.png)
-
-![Referencia de estructura](../screenshots/filesystem-10-structure-reference.png)
-
-![Vista final](../screenshots/filesystem-11-final-structure.png)
-
-## Lo que aprendí
-
-El Filesystem Hierarchy Standard no es solo una convención: es lo que hace que cualquier sysadmin pueda trabajar en cualquier servidor Linux sin perderse. Poner archivos en lugares incorrectos genera caos en producción.
-
-El sticky bit resuelve un problema real: en carpetas compartidas sin él, cualquier usuario puede borrar archivos de otros. Con él, cada quien solo borra lo suyo.
+Reconcile ownership with the shared development model in [stage 02](02-users-permissions.md), confirm the symlink target exists, and translate the on-server structure reference during the next lab update. Preserve original captures as historical evidence.
