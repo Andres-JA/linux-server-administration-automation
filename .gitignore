@@ -1,3 +1,31 @@
+# Private reference material and completion checklist
+/PROJECT-GUIDE.local.md
+/PROJECT-TODO.local.md
+/Guia_Linux_Server_Administration_Automation_Portafolio.md
+
+# Credentials and local environment
+.env
+.env.*
+*.pem
+*.key
+*.ppk
+id_rsa
+id_dsa
+id_ecdsa
+id_ed25519
+linux_lab_ed25519
+
+# Runtime output and real backup archives
 *.log
-backups/
+*.tar
+*.tar.gz
+*.tgz
+*.zip
+/backups/
 __pycache__/
+
+# Local tooling and operating-system files
+.vagrant/
+.vscode/
+.DS_Store
+Thumbs.db
