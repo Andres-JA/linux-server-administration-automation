@@ -47,13 +47,13 @@ y no NAT en la configuración de VirtualBox.
 ## Evidencia
 
 ### VM creada en VirtualBox
-![VM creada](./screenshots/vm-created.png)
+![VM creada](../screenshots/setup-01-vm-configuration.png)
 
 ### Primer login en el servidor
-![Primer login](./screenshots/first-commands.png)
+![Primer login](../screenshots/setup-02-initial-commands.png)
 
 ### Conexión SSH desde PC local
-![SSH](./screenshots/ssh-connected.png)
+![SSH](../screenshots/setup-03-ssh-login.png)
 
 ## Lo que se aprendio
 

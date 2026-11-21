@@ -77,41 +77,41 @@ Linux tiene un estándar que define para qué sirve cada directorio raíz. Segui
 
 ### Exploración del filesystem
 
-![Raíz de Linux](./screenshots/01-raiz-linux.png)
+![Raíz de Linux](../screenshots/filesystem-01-linux-root.png)
 
-![Filesystems montados](./screenshots/02-mounted-filesystems.png)
+![Filesystems montados](../screenshots/filesystem-02-mounted-filesystems.png)
 
 ### Estructura creada
 
-![Árbol del proyecto](./screenshots/03-project-tree.png)
+![Árbol del proyecto](../screenshots/filesystem-03-project-tree.png)
 
-![Permisos por directorio](./screenshots/04-directory-permissions.png)
+![Permisos por directorio](../screenshots/filesystem-04-directory-permissions.png)
 
 ### Conceptos aplicados
 
-![Sticky bit en acción](./screenshots/05-sticky-bit.png)
+![Sticky bit en acción](../screenshots/filesystem-05-sticky-bit.png)
 
-![Symlinks](./screenshots/06-symlinks.png)
+![Symlinks](../screenshots/filesystem-06-symlinks.png)
 
 ### Búsqueda de archivos
 
-![Comandos find (1/2)](./screenshots/07-find-commands-1.png)
+![Comandos find (1/2)](../screenshots/filesystem-07-find-commands-1.png)
 
-![Comandos find (2/2)](./screenshots/07-find-commands-2.png)
+![Comandos find (2/2)](../screenshots/filesystem-07-find-commands-2.png)
 
 ### Administración del disco
 
-![Uso de disco](./screenshots/08-disk-usage.png)
+![Uso de disco](../screenshots/filesystem-08-disk-usage.png)
 
 ### Sistema y montaje
 
-![fstab y montaje (1/2)](./screenshots/09-fstab-mount-1.png)
+![fstab y montaje (1/2)](../screenshots/filesystem-09-fstab-mount-1.png)
 
-![fstab y montaje (2/2)](./screenshots/09-fstab-mount-2.png)
+![fstab y montaje (2/2)](../screenshots/filesystem-09-fstab-mount-2.png)
 
-![Referencia de estructura](./screenshots/10-structure-reference.png)
+![Referencia de estructura](../screenshots/filesystem-10-structure-reference.png)
 
-![Vista final](./screenshots/11-final-structure.png)
+![Vista final](../screenshots/filesystem-11-final-structure.png)
 
 ## Lo que aprendí
 

@@ -31,7 +31,7 @@ y restringir el acceso SSH a los perfiles de administración.
 | cloud | cloud | developers | No | Cloud Engineer |
 | admin | admin | admins, sudo | Sí | Administrador |
 
-> `devops` es la cuenta base creada en [V01 Server Setup](../server-setup/README.md).
+> `devops` es la cuenta base creada en [V01 Server Setup](01-server-setup.md).
 > No forma parte de esta versión, pero es la dueña de `/srv/project/`
 > y mantiene acceso por SSH como administrador del servidor.
 
@@ -112,22 +112,22 @@ y no asumir que el comando falló.
 
 ### Grupos y usuarios creados
 
-![Grupos developers y admins creados](./screenshots/01-groups-created.jpeg)
-![Usuarios dev, cloud y admin con sus IDs](./screenshots/02-users-and-ids.jpeg)
+![Grupos developers y admins creados](../screenshots/users-01-groups-created.jpeg)
+![Usuarios dev, cloud y admin con sus IDs](../screenshots/users-02-users-and-ids.jpeg)
 
 ### Estructura de directorios y permisos
 
-![Estructura de /srv/project con ls -la](./screenshots/03-project-structure.jpeg)
+![Estructura de /srv/project con ls -la](../screenshots/users-03-project-structure.jpeg)
 
 ### Privilegios sudo
 
-![dev sin sudo frente a admin con sudo](./screenshots/04-sudo-privileges.jpeg)
+![dev sin sudo frente a admin con sudo](../screenshots/users-04-sudo-privileges.jpeg)
 
 ### Seguridad SSH
 
-![Directiva AllowUsers en sshd_config](./screenshots/05-ssh-allowusers-config.jpeg)
-![Servicio SSH sigue corriendo tras el cambio](./screenshots/06-ssh-service-status.jpeg)
+![Directiva AllowUsers en sshd_config](../screenshots/users-05-ssh-allowusers-config.jpeg)
+![Servicio SSH sigue corriendo tras el cambio](../screenshots/users-06-ssh-service-status.jpeg)
 
 ### Administración
 
-![Usuarios reales del sistema con awk](./screenshots/07-real-users.jpeg)
+![Usuarios reales del sistema con awk](../screenshots/users-07-real-users.jpeg)

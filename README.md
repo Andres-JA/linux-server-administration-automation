@@ -15,9 +15,9 @@ Cada versión resuelve un problema concreto, igual que en un entorno de producci
 
 | # | Versión | Objetivo | Estado |
 |:--|:--------|----------|:-------|
-| 01 | [Server Setup](server-setup/) | Instalar y configurar Ubuntu Server | Completado |
-| 02 | [User Management](user-management/) | Usuarios, grupos, permisos y SGID | Completado |
-| 03 | [Filesystem](Filesystem/) | Estructura, permisos avanzados y FHS | Completado |
+| 01 | [Server Setup](docs/01-server-setup.md) | Instalar y configurar Ubuntu Server | Completado |
+| 02 | [User Management](docs/02-users-permissions.md) | Usuarios, grupos, permisos y SGID | Completado |
+| 03 | [Filesystem](docs/05-filesystem.md) | Estructura, permisos avanzados y FHS | Completado |
 | 04 | Security | UFW, SSH keys, Fail2ban | En progreso |
 | 05 | Automation | Scripts bash | Pendiente |
 | 06 | Monitoring | Reporte del sistema | Pendiente |
@@ -32,9 +32,9 @@ Cada versión resuelve un problema concreto, igual que en un entorno de producci
 | Archivo | Descripción |
 |:---|:---|
 | [CHANGELOG.md](./CHANGELOG.md) | Registro de cambios por versión |
-| [server-setup/README.md](server-setup/README.md) | V01 — Instalación y configuración base del servidor |
-| [user-management/README.md](user-management/README.md) | V02 — Usuarios, grupos, permisos y acceso SSH |
-| [Filesystem/README.md](Filesystem/README.md) | V03 — Estructura de directorios, permisos avanzados y FHS |
+| [docs/01-server-setup.md](docs/01-server-setup.md) | V01 — Instalación y configuración base del servidor |
+| [docs/02-users-permissions.md](docs/02-users-permissions.md) | V02 — Usuarios, grupos, permisos y acceso SSH |
+| [docs/05-filesystem.md](docs/05-filesystem.md) | V03 — Estructura de directorios, permisos avanzados y FHS |
 
 ---
 

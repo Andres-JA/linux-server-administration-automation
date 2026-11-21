@@ -40,7 +40,7 @@ y el proyecto se versiona con [Versionado Semántico](https://semver.org/lang/es
 - Verificación de privilegios sudo: `dev` sin acceso y `admin` con acceso
 - Restricción de acceso SSH con `AllowUsers devops admin` en `/etc/ssh/sshd_config`
 - Confirmación de que el servicio SSH sigue activo tras el cambio
-- Evidencia visual en `user-management/screenshots/` (7 capturas, renombradas
+- Evidencia visual en `screenshots/` (7 capturas, renombradas
   con nomenclatura `NN-descripcion.jpeg`)
 
 ### Documentación
