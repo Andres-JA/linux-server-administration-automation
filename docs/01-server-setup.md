@@ -20,9 +20,10 @@ Deploy a Linux VM and administer it remotely from Windows. The existing lab reco
 | --- | --- |
 | Hypervisor | VirtualBox |
 | Guest OS | Ubuntu Server 26.04 LTS, visible in the SSH login banner |
-| RAM | 2048 MB, recorded in the original notes |
-| Virtual disk | 25 GB, recorded in the original notes |
-| Networking | Bridged adapter, recorded in the original notes |
+| vCPU | 2, verified in the current VirtualBox configuration capture |
+| RAM | 2048 MB, verified in the current VirtualBox configuration capture |
+| Virtual disk | 25 GB VDI, verified in the current VirtualBox configuration capture |
+| Networking | Bridged adapter, verified in the current VirtualBox configuration capture |
 | Hostname | `linux-server` |
 | Administrative account | `devops` |
 | SSH client | Windows PowerShell |
@@ -69,10 +70,20 @@ These commands summarize the original exercises; replace `<VM_IP>` with the curr
 
 ![Successful SSH login from Windows](../screenshots/setup-03-ssh-login.png)
 
+## Current VM configuration check
+
+The VirtualBox Manager shows `linux-server` running with 2 processors, 2048 MB RAM, a 25 GB VDI, and a bridged network adapter. This screenshot verifies the hypervisor settings; it does not verify the current guest operating system release, SSH security policy, or firewall state.
+
+The selected VirtualBox OS profile reads Ubuntu 25.04. That profile is metadata, not a guest OS check. Confirm the installed release with `/etc/os-release` before changing the recorded Ubuntu 26.04 result from the original SSH capture.
+
+![Current running VM and VirtualBox configuration](../screenshots/setup-04-current-vm-configuration.png)
+
+A later direct SSH connection using the dedicated lab Ed25519 key succeeded. Read-only checks confirmed hostname `linux-server`, Ubuntu 26.04.1 LTS, and the administrative account `devops`. The earlier authentication failure was resolved by authorizing the public key. No guest security settings were changed during these checks.
+
 ## Remaining validation
 
 - Capture `hostnamectl`, `cat /etc/os-release`, `ip -br addr`, `ip route`, `free -h`, and `df -h /` as a current baseline.
-- Record vCPU count, adapter settings, and a baseline VirtualBox snapshot.
+- Create and record a baseline VirtualBox snapshot. CPU, RAM, disk, and adapter settings are captured above.
 - Confirm the management network. If adopting NAT + Host-only, capture the new configuration and retest access.
 - Verify `systemctl is-active ssh`, package update completion, and `timedatectl` with the intended timezone.
 - Capture `whoami` and `hostname` inside a fresh remote session.

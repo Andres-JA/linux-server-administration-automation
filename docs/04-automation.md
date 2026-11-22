@@ -6,11 +6,11 @@
 
 | State | Meaning |
 | --- | --- |
-| Already documented | This planning document and artifact requirements exist. No scripts or units have been delivered. |
-| Remaining | Implement three scripts, two services, two timers, and a verified backup restore. |
-| Stage status | Implementation pending. |
+| Already documented | lab-monitor.sh and lab-monitor.service are installed and verified through manual execution and a successful oneshot journal in week 3. |
+| Remaining | Implement user-report.sh, lab-backup.sh, the backup service, both timers, and a verified backup restore; schedule the existing monitor. |
+| Stage status | Monitoring prerequisite complete; scheduled automation and recovery pending. |
 
-**Status: planned.** Scripts, timers, backups, and restoration tests have not yet been delivered or validated.
+**Status: monitoring prerequisite complete; week-4 automation pending.** The monitor script and its oneshot unit were installed and tested in week 3. No monitor/backup timers, user-report/backup scripts, or restore tests have been implemented yet.
 
 ## Goal
 
@@ -20,10 +20,10 @@ Automate operational reports and daily backups, then prove that an archived file
 
 | Artifact | Purpose | Acceptance |
 | --- | --- | --- |
-| `scripts/lab-monitor.sh` | Timestamp, hostname, uptime, CPU/load, RAM, disk, Nginx state | Manual execution and successful service journal |
+| [scripts/lab-monitor.sh](../scripts/lab-monitor.sh) | Timestamp, hostname, uptime, CPU/load, RAM, disk, Nginx state | Completed: manual execution and successful service journal |
 | `scripts/user-report.sh` | Local human-user candidates and lab groups | Bounded UID range and final role names |
 | `scripts/lab-backup.sh` | Compression, archive validation, retention | Restricted archive access and documented source/retention |
-| `configs/systemd/lab-monitor.service` | Run the monitor once | Successful exit and report |
+| [configs/systemd/lab-monitor.service](../configs/systemd/lab-monitor.service) | Run the monitor once | Completed: successful exit and journal report |
 | `configs/systemd/lab-monitor.timer` | Schedule monitoring | Approximately every 15 minutes |
 | `configs/systemd/lab-backup.service` | Run the backup once | Successful exit and verified archive |
 | `configs/systemd/lab-backup.timer` | Schedule backups | Daily 02:00 server time with persistent catch-up |
@@ -32,7 +32,8 @@ The guide backs up `/srv/lab/engineering`; the existing lab uses `/srv/project/s
 
 ## Acceptance checklist
 
-- [ ] Write and manually test all three scripts on Ubuntu with error handling and quoted paths.
+- [x] Install and test the monitor script and oneshot unit (completed in week 3).
+- [ ] Write and test user-report.sh and lab-backup.sh on Ubuntu with error handling and quoted paths.
 - [ ] Commit the tested contents and install matching copies under `/usr/local/bin`.
 - [ ] Install matching units in `/etc/systemd/system`, reload systemd, and enable both timers.
 - [ ] Record the timezone and next scheduled executions.

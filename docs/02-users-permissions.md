@@ -9,7 +9,7 @@
 | Completed | Shared development permissions, read-only audit role, allowed/denied access tests, separate SSH keys, SSH hardening, and UFW |
 | Verified | Fresh devops/admin key sessions, rejected password-only login, dev denied by AllowUsers, successful protected confirmation |
 | Evidence | Four new native VM captures linked below; original milestone evidence retained |
-| Next documented stage | [Services and processes](03-services-processes.md), published separately |
+| Next stage | Stage 03 is complete; proceed to [automation and recovery](04-automation.md) |
 
 **Week 2 completed and verified on 2026-11-21.** This is a local VirtualBox lab running Ubuntu Server 26.04.1 LTS.
 
@@ -27,7 +27,7 @@ Separate project work from administration, demonstrate least privilege with real
 | admin | admins, sudo | Separate administrative account and SSH key |
 | auditor | auditors | Read-only audit directory; no sudo; no SSH access |
 
-The lab keeps the existing dev/cloud/admin names and `/srv/project` paths instead of recreating the guide's accounts and `/srv/lab`. The auditor role supplies the guide's read-only access-control exercise. The optional Nginx-only operator policy belongs to the separate services milestone.
+The lab keeps the existing dev/cloud/admin names and `/srv/project` paths instead of recreating the guide's accounts and `/srv/lab`. The auditor role supplies the guide's read-only access-control exercise. The optional Nginx-only operator policy is now implemented and tested in stage 03.
 
 ## Final directory policy
 
@@ -85,7 +85,7 @@ The script checked `sshd -t` and effective settings with `sshd -T` before reload
 
 ## Firewall policy
 
-The actual bridged lab network is `192.168.100.0/24`. UFW is active with default deny incoming, allow outgoing, and an inbound TCP 22 rule restricted to that subnet. At the week-2 checkpoint, IPv6 support was enabled and no IPv6 SSH allow rule or HTTP rule had been added.
+The actual bridged lab network is `192.168.100.0/24`. UFW is active with default deny incoming, allow outgoing, and an inbound TCP 22 rule restricted to that subnet. At the week-2 checkpoint, IPv6 support was enabled and no IPv6 SSH allow rule or HTTP rule had been added. Stage 03 later added IPv4 HTTP from the same management subnet.
 
 This is the local LAN used by the bridged VM, not an isolated Host-only network. Restricted UFW rules do not make the entire LAN trusted in a production sense. Migrating to NAT + Host-only remains a possible lab improvement.
 
@@ -119,4 +119,4 @@ These original captures document the earlier exercises. They precede the final c
 
 ## Next work
 
-The next documented milestone is [stage 03](03-services-processes.md): Nginx, HTTP tests, processes/logs, controlled recovery, and the optional restricted operator policy. That work will be published separately. Week 1 still has separate baseline/snapshot/timezone evidence tasks in its own document.
+[Stage 03](03-services-processes.md) is now complete: Nginx, subnet-restricted HTTP, process/log inspection, service recovery, and restricted operator sudo were verified. The next implementation stage is [week 4](04-automation.md). Week 1 still has separate baseline/snapshot/timezone evidence tasks in its own document.

@@ -9,6 +9,18 @@ V01-V03 are the original learning milestones, not semantic version releases. The
 - Updated the public README to the week-2 checkpoint; implementation was verified on 2026-11-21.
 - Kept week-3 implementation and evidence local for a later publication.
 
+## 2026-11-21 - Week 3 services and processes
+
+- Installed Nginx and a root-owned English HTTP fixture; retained SSH restrictions and allowed HTTP only from the lab subnet.
+- Verified exact page content and HTTP 200 from Windows, refused connections during a controlled stop, and successful HTTP recovery.
+- Recorded master/worker processes, listeners, and journal transitions.
+- Installed and tested the read-only Bash monitor and hardened devops oneshot unit; verified Result=success and ExecMainStatus=0.
+- Added a locked operator role with only the exact Nginx restart sudo command; permitted/denied tests passed.
+- Preserved the interrupted initial package-install output; continuation detects fully installed packages and skips duplicate downloads.
+- Added six pointer-free captures, installed-file documentation, and updated private progress tracking. Timers, backup/report scripts, and restoration remain week 4.
+- Added line-ending attributes for Linux scripts/configuration so Windows checkouts retain executable Bash-compatible LF files.
+- Recorded in a local commit on 2026-11-22; no push for this milestone.
+
 ## 2026-11-21 - Week 2 access and security
 
 - Reconciled source access to devops:developers mode 2770; added auditors with read-only audit access.
@@ -16,7 +28,7 @@ V01-V03 are the original learning milestones, not semantic version releases. The
 - Installed matching SSH hardening with separate administrative keys; verified fresh devops/admin sessions, rejected password-only access, and journal-confirmed AllowUsers denial.
 - Enabled default-deny incoming UFW with SSH allowed from the actual bridged lab subnet.
 - Demonstrated timed rollback, then confirmed the revised change after independent key checks; verified no rollback timer remained scheduled.
-- Added four pointer-free native VM captures of actual execution records; updated public English documentation and private task tracking.
+- Added four pointer-free native VM captures of actual execution records plus a current VM-configuration capture; updated public English documentation and private task tracking.
 - Week-2 implementation and evidence were published on 2026-11-22.
 
 ## 2026-11-21 - Progress clarification

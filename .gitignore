@@ -32,3 +32,6 @@ __pycache__/
 .vscode/
 .DS_Store
 Thumbs.db
+
+# Original browser export: identical pixels are kept under the documented name
+/screenshots/192.168.100.60_.png
