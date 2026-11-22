@@ -7,7 +7,7 @@
 | State | Meaning |
 | --- | --- |
 | Already documented | Filesystem exercises and 13 original captures are documented. |
-| Remaining | Reconcile final directory ownership/modes with the shared-development policy. |
+| Remaining | Shared-source permissions reconciled in stage 02; confirm the configuration symlink target during baseline follow-up. |
 | Stage status | Supplementary work; this is not week 5. |
 
 ## Goal and status
@@ -16,7 +16,7 @@ Organize service data, inspect storage, and test Linux access controls. This sup
 
 ## Recorded layout
 
-The later filesystem notes describe this model:
+The original filesystem notes describe the historical model below. The final shared-source policy is now `2770 devops:developers`, verified in [stage 02](02-users-permissions.md); the historical tree is retained to explain the earlier exercise:
 
 ```text
 /srv/project/
@@ -42,7 +42,7 @@ The later filesystem notes describe this model:
 | `backups/` | Root-only access | Restrict archive access |
 | `tmp/` | World-writable with sticky bit | Shared temporary files with restricted deletion |
 
-This changes the earlier `developers` group and setgid collaboration model. Continued shared developer write access is not demonstrated. Recheck live ownership and modes, and choose the final policy before deployment.
+This historical model differed from the earlier shared-development exercise. The live check found `2755 devops:devops`; stage 02 corrected it to `2770 devops:developers` and verified shared developer access. The new audit directory and its read-only role are documented there.
 
 ## Observed access-control test
 
@@ -111,4 +111,4 @@ Mount screenshots document inspection of mounts and `/etc/fstab`; they do not es
 
 ## Remaining validation
 
-Reconcile ownership with the shared development model in [stage 02](02-users-permissions.md), confirm the symlink target exists, and translate the on-server structure reference during the next lab update. Preserve original captures as historical evidence.
+Ownership reconciliation is complete in [stage 02](02-users-permissions.md). Confirm the symlink target exists and translate the on-server structure reference during a later filesystem follow-up. Original captures remain historical evidence.

@@ -1,15 +1,15 @@
 # Linux Server Administration & Automation
 
-Hands-on Ubuntu Server lab demonstrating remote administration, local identity management, Linux permissions, and filesystem operations. The remaining stages cover secure SSH access, Nginx, and Bash automation with systemd.
+Hands-on Ubuntu Server lab demonstrating remote administration, local identity management, Linux permissions, and filesystem operations. The published week-2 milestone adds key-only SSH, a restricted firewall, and verified group-based access controls. Later service/automation work is published separately.
 
-**Status: in progress.** Existing work is documented with 23 original screenshots. Firewall hardening, service deployment, and automated backup recovery are pending.
+**Published milestone: week 2 completed and verified.** The repository includes 23 original screenshots and four new permissions/SSH/firewall captures. Subsequent stages are not included in this publication.
 
 ## Demonstrated skills
 
 | Area | Work documented | Evidence |
 | --- | --- | --- |
 | Server administration | VirtualBox installation and SSH access from Windows | [Server setup](docs/01-server-setup.md) |
-| Identity and access | Role-based accounts, groups, sudo checks, and SSH user allowlist | [Users and permissions](docs/02-users-permissions.md) |
+| Identity and access | Shared development access, read-only audit role, sudo checks, SSH keys/allowlist, and UFW | [Users and permissions](docs/02-users-permissions.md) |
 | Filesystem operations | Ownership, setgid, sticky bit, symlinks, file searches, disk and mount inspection | [Filesystem lab](docs/05-filesystem.md) |
 | Troubleshooting | Network adapter change to restore connectivity; denied deletion in a sticky-bit directory | [Setup findings](docs/01-server-setup.md#troubleshooting) and [permission test](docs/05-filesystem.md#observed-access-control-test) |
 
@@ -28,23 +28,23 @@ Ubuntu Server 26.04 LTS VM
 
 Recorded resources: 2 GB RAM and a 25 GB virtual disk. Hostname: `linux-server`.
 
-The reference guide uses Ubuntu 24.04, NAT + Host-only, and `/srv/lab`. This repository preserves the existing 26.04 lab, bridged network, account names, and `/srv/project` paths. The management network and final access policy still need validation against the guide's requirements.
+The reference guide uses Ubuntu 24.04, NAT + Host-only, and `/srv/lab`. This repository preserves the existing 26.04 lab, bridged network, account names, and `/srv/project` paths. The final week-2 policy is documented and tested in stage 02; its allowed management subnet is the bridged lab LAN.
 
-**Tools used:** Ubuntu Server, VirtualBox, OpenSSH, Bash command line, Linux filesystem utilities, Git. Nginx, UFW, and systemd automation belong to the remaining scope.
+**Tools used in this milestone:** Ubuntu Server, VirtualBox, OpenSSH, UFW, Bash, Linux filesystem utilities, systemd rollback timers, Git.
 
 ## Documentation and progress
 
-**Current guide stage: week 2, partially complete.** Week 1 setup exists with verification evidence remaining. Weeks 3 and 4 are implementation plans. Chapter 05 preserves earlier filesystem work; it is not a fifth week.
+**Published progress: through week 2.** Week 1 still has baseline/snapshot/timezone evidence tasks. Services and automation are separate publication milestones. Chapter 05 preserves original filesystem work; it is not a fifth week.
 
-The presence of a document or delivery directory does not mean its implementation is complete: `scripts/` and `configs/` currently contain requirements README files.
+The two tested week-2 scripts and SSH configuration are included below. Documents for later stages describe their requirements; their implementation is outside this publication.
 
 | Stage | Scope | Status |
 | --- | --- | --- |
 | [01 - Server setup](docs/01-server-setup.md) | VM, networking, remote access | Existing setup documented; full baseline checks remain |
-| [02 - Users, permissions and security](docs/02-users-permissions.md) | Accounts, sudo, SSH, firewall | Accounts and allowlist documented; SSH keys and UFW pending |
-| [03 - Services and processes](docs/03-services-processes.md) | Nginx, logs, recovery | Planned |
-| [04 - Automation and recovery](docs/04-automation.md) | Bash, timers, backup restoration | Planned |
-| [05 - Filesystem operations](docs/05-filesystem.md) | Additional original exercises | Documented; permission reconciliation pending |
+| [02 - Users, permissions and security](docs/02-users-permissions.md) | Accounts, sudo, SSH, firewall | Completed and verified; four new evidence captures |
+| [03 - Services and processes](docs/03-services-processes.md) | Nginx, logs, recovery | Not yet published |
+| [04 - Automation and recovery](docs/04-automation.md) | Bash, timers, backup restoration | Not yet published |
+| [05 - Filesystem operations](docs/05-filesystem.md) | Additional original exercises | Documented; source permissions reconciled in stage 02 |
 
 ## Repository layout
 
@@ -53,9 +53,9 @@ The presence of a document or delivery directory does not mean its implementatio
 |-- README.md
 |-- CHANGELOG.md
 |-- docs/                 # Four guide stages + original filesystem lab
-|-- scripts/              # Delivery requirements; tested scripts pending
+|-- scripts/              # Tested week-2 access/security scripts
 |-- configs/
-|   |-- ssh/              # SSH configuration requirements
+|   |-- ssh/              # Tested SSH hardening configuration
 |   `-- systemd/          # Service and timer requirements
 |-- screenshots/          # Original evidence with English filenames
 `-- .gitignore
@@ -63,28 +63,28 @@ The presence of a document or delivery directory does not mean its implementatio
 
 ## Selected evidence
 
-### Remote SSH access from Windows
+### Independent administrative key logins
 
-![Successful SSH session to the Ubuntu VM](screenshots/setup-03-ssh-login.png)
+![Successful SSH key connections for devops and admin](screenshots/users-09-ssh-key-login.png)
 
-### User privilege checks
+### Shared development and read-only audit access
 
-![Developer denied sudo and administrator using sudo](screenshots/users-04-sudo-privileges.jpeg)
+![Allowed and denied role-based permission tests](screenshots/users-08-permission-tests.png)
 
-### Sticky-bit access control
+### Restricted firewall
 
-![Another user cannot delete a file in the shared temporary directory](screenshots/filesystem-05-sticky-bit.png)
+![Active subnet-restricted UFW and confirmed security change](screenshots/users-11-ufw-rules.png)
 
-Full evidence is linked from each stage. Original captures retain their original language and terminal output.
+Full evidence and provenance are documented in stage 02. The new VM images display actual saved execution records; original milestone images retain their original language/output.
 
 ## Engineering findings
 
 - Setgid controls group inheritance. File modes and umask still determine group write access.
-- The later filesystem exercise changes `src/` from a shared developer directory to an owner-writable directory. These access models need reconciliation before deployment.
-- SSH account allowlisting, key authentication, and firewall restrictions require separate validation.
+- The later filesystem exercise had removed developer write access. Week 2 reconciled source to `2770 devops:developers` and verified shared writes and denied audit writes.
+- SSH allowlisting, key authentication, and firewall rules were validated separately. A timed rollback protected changes until independent key checks confirmed access.
 
 ## Scope and verification
 
-This is a local learning lab. Existing screenshots and notes establish the recorded results; this documentation update did not execute commands on the VM. Planned-stage checklists describe acceptance criteria, not completed tests.
+This is a local learning lab. Original evidence records prior milestones. Week-2 scripts were executed on the VM and independently tested from Windows. Later-stage planning documents do not imply that their implementation is included in this publication.
 
 Keep passwords, private keys, environment secrets, and real backup archives outside Git. See the [change history](CHANGELOG.md) for the original milestones and repository reorganization.

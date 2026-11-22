@@ -2,6 +2,23 @@
 
 V01-V03 are the original learning milestones, not semantic version releases. Their original dates were not recorded.
 
+## 2026-11-22 - Week 2 publication
+
+- Published the four permissions, key-login, SSH-hardening, and UFW evidence captures.
+- Published tested week-2 scripts, matching SSH configuration, and English access-control documentation.
+- Updated the public README to the week-2 checkpoint; implementation was verified on 2026-11-21.
+- Kept week-3 implementation and evidence local for a later publication.
+
+## 2026-11-21 - Week 2 access and security
+
+- Reconciled source access to devops:developers mode 2770; added auditors with read-only audit access.
+- Executed permitted/denied permission tests and verified sudo denial for dev/auditor.
+- Installed matching SSH hardening with separate administrative keys; verified fresh devops/admin sessions, rejected password-only access, and journal-confirmed AllowUsers denial.
+- Enabled default-deny incoming UFW with SSH allowed from the actual bridged lab subnet.
+- Demonstrated timed rollback, then confirmed the revised change after independent key checks; verified no rollback timer remained scheduled.
+- Added four pointer-free native VM captures of actual execution records; updated public English documentation and private task tracking.
+- Week-2 implementation and evidence were published on 2026-11-22.
+
 ## 2026-11-21 - Progress clarification
 
 - Added completed-versus-remaining summaries to all five technical chapters.

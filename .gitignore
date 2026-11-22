@@ -16,6 +16,7 @@ id_dsa
 id_ecdsa
 id_ed25519
 linux_lab_ed25519
+linux_lab_*_ed25519
 
 # Runtime output and real backup archives
 *.log

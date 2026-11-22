@@ -4,95 +4,119 @@
 
 ## At a glance
 
-| State | Meaning |
+| State | Result |
 | --- | --- |
-| Already documented | Accounts, groups, sudo checks, directory exercises, and the SSH allowlist edit are documented. |
-| Remaining | Reconcile permissions, prove allowed/denied access, implement key login, SSH hardening, and UFW. |
-| Stage status | Partially implemented; current guide stage. |
+| Completed | Shared development permissions, read-only audit role, allowed/denied access tests, separate SSH keys, SSH hardening, and UFW |
+| Verified | Fresh devops/admin key sessions, rejected password-only login, dev denied by AllowUsers, successful protected confirmation |
+| Evidence | Four new native VM captures linked below; original milestone evidence retained |
+| Next documented stage | [Services and processes](03-services-processes.md), published separately |
 
-## Goal and status
+**Week 2 completed and verified on 2026-11-21.** This is a local VirtualBox lab running Ubuntu Server 26.04.1 LTS.
 
-Separate administrative access from project work and apply explicit ownership and permissions. Users, groups, sudo checks, and an SSH allowlist are documented. Key-based login, effective SSH hardening, and UFW validation are pending.
+## Goal
 
-## Recorded accounts
+Separate project work from administration, demonstrate least privilege with real permitted/denied operations, and retain remote access while enabling key-only SSH and a restricted firewall policy.
 
-| Account | Primary group | Supplementary groups | Intended access |
+## Final accounts and access
+
+| Account | Relevant groups | Intended access |
+| --- | --- | --- |
+| devops | devops, sudo; existing installation memberships retained | Base administrator and project owner; dedicated SSH key |
+| dev | developers | Shared source access; no sudo; no SSH access |
+| cloud | developers | Shared source access; no sudo; no SSH access |
+| admin | admins, sudo | Separate administrative account and SSH key |
+| auditor | auditors | Read-only audit directory; no sudo; no SSH access |
+
+The lab keeps the existing dev/cloud/admin names and `/srv/project` paths instead of recreating the guide's accounts and `/srv/lab`. The auditor role supplies the guide's read-only access-control exercise. The optional Nginx-only operator policy belongs to the separate services milestone.
+
+## Final directory policy
+
+| Path | Owner/group | Mode | Result |
 | --- | --- | --- | --- |
-| `devops` | Existing installation account | Reconfirm current memberships | Base administrator and original project owner |
-| `dev` | `dev` | `developers` | Development work without sudo |
-| `cloud` | `cloud` | `developers` | Project work without sudo |
-| `admin` | `admin` | `admins`, `sudo` | Administration |
+| /srv/project | devops:developers | 755 | Administrator controls top-level entries; other roles can traverse |
+| /srv/project/src | devops:developers | 2770 | Owner and developer group can work; setgid preserves group inheritance |
+| /srv/project/audit | root:auditors | 2750 | Auditor group can read/traverse but cannot create entries |
+| /srv/project/audit/readme.txt | root:auditors | 640 | Root writes; auditors read |
 
-These names differ from the guide's `developer`, `operator`, and `auditor`. A read-only audit role and a narrowly scoped operator sudo policy have not been demonstrated.
+The earlier filesystem exercise had left source at `2755 devops:devops`, which prevented dev/cloud group writes. [week2-permissions.sh](../scripts/week2-permissions.sh) recorded prior modes/owners, reconciled the source tree's group access without following symlinks or crossing mounts, and created the audit role. Existing file owners and executable bits were retained.
 
-## Original shared directory model
+## Permission and privilege tests
+
+The privileged script returned `WEEK2_PHASE1_COMPLETE` with these observed results:
+
+- dev and cloud each created a source file; both new files inherited developers.
+- cloud appended to a dev-owned test file after group write permission was set.
+- auditor read the audit reference file, but file creation was denied.
+- auditor could not traverse the private source directory.
+- Sudo policy denied administrative commands to dev and auditor.
+
+Setgid controls group inheritance; it does not grant write access to every new file. The creation tests produced mode 600 files because mktemp uses restrictive modes. The separate shared-write test explicitly set group write access. Umask and file modes remain relevant for future development tools.
+
+![Captured permission and sudo test output](../screenshots/users-08-permission-tests.png)
+
+## SSH configuration and validation
+
+Dedicated Ed25519 identities were used for devops and admin. Private keys remain outside the repository. Fresh Windows OpenSSH sessions ran `id -un` and `hostname` successfully under each account using its own identity, `IdentitiesOnly=yes`, `BatchMode=yes`, and strict host-key checking.
+
+![Independent key-login execution records](../screenshots/users-09-ssh-key-login.png)
+
+The installed [00-lab-hardening.conf](../configs/ssh/00-lab-hardening.conf) matches the local copy byte for byte and sets:
 
 ```text
-/srv/project/        devops:developers, mode 775
-|-- src/             mode 775 plus setgid (2775)
-|-- config/
-|-- logs/            mode 755
-`-- backups/
+PasswordAuthentication no
+KbdInteractiveAuthentication no
+PubkeyAuthentication yes
+PermitRootLogin no
 ```
 
-The original notes record a group-inheritance exercise using two accounts. Setgid makes new entries inherit the directory's group; it does not itself grant group write permission. Umask and file modes still matter.
-
-Mode `2775` also permits access to other local users, making it broader than the guide's `2770` engineering directory. The [later filesystem exercise](05-filesystem.md) records `src/` as `devops:devops` with mode `755`, changing the collaboration policy. Recheck the VM and settle the final policy before deployment.
-
-## Commands used in the exercises
-
-| Command | Purpose |
-| --- | --- |
-| `groupadd developers` | Create the project group |
-| `useradd -m -s /bin/bash -c "Development account" dev` | Create a home directory and Bash account |
-| `usermod -aG developers dev` | Append supplementary group membership |
-| `id dev` | Inspect UID and groups |
-| `getent group developers` | Inspect the group entry |
-| `chown devops:developers /srv/project` | Assign project ownership |
-| `chmod g+s /srv/project/src` | Enable directory group inheritance |
-| `awk -F: '$3 >= 1000' /etc/passwd` | Original UID-based account listing |
-
-These are references from an existing lab, not an idempotent provisioning script. Inspect existing accounts and paths before repeating creation commands. Apply directory and file modes separately rather than recursively making every file executable.
-
-On Ubuntu, `adduser` provides an interactive workflow; `useradd` provides lower-level account options. This exercise used `useradd`. The original UID filter may include special accounts such as `nobody`; the planned report needs a bounded UID range and an explanation of its limitations.
-
-## Sudo verification
-
-The capture shows `dev` denied sudo and `admin` using sudo. After changing supplementary groups, validate with a fresh login session. Other sudo policy changes may take effect without reconnecting.
-
-## SSH allowlist
-
-The original capture shows this directive in `/etc/ssh/sshd_config`:
+The existing main `/etc/ssh/sshd_config` retains:
 
 ```text
 AllowUsers devops admin
 ```
 
-A separate capture records SSH running. Service health alone does not prove the effective allowlist or denied login behavior. Capture `sudo sshd -t`, `sudo sshd -T`, and permitted/denied login tests before marking the policy fully validated.
+The script checked `sshd -t` and effective settings with `sshd -T` before reloading. Subsequent independent tests confirmed:
 
-The existing remote-login screenshot uses password authentication. Key-only login, disabled root login, and restricted firewall rules are not yet evidenced.
+- Both administrative keys still authenticated after SSH/UFW changes.
+- A password-only client attempt failed with exit code 255; the server offered publickey only.
+- A dev login attempt was denied. The journal explicitly recorded that dev was not listed in AllowUsers, establishing the reason for denial.
 
-## Evidence
+![Effective SSH settings and rejected authentication](../screenshots/users-10-ssh-hardening.png)
 
-![Created developers and admins groups](../screenshots/users-01-groups-created.jpeg)
+## Firewall policy
 
-![Accounts and their IDs](../screenshots/users-02-users-and-ids.jpeg)
+The actual bridged lab network is `192.168.100.0/24`. UFW is active with default deny incoming, allow outgoing, and an inbound TCP 22 rule restricted to that subnet. At the week-2 checkpoint, IPv6 support was enabled and no IPv6 SSH allow rule or HTTP rule had been added.
 
-![Original ownership and directory permissions](../screenshots/users-03-project-structure.jpeg)
+This is the local LAN used by the bridged VM, not an isolated Host-only network. Restricted UFW rules do not make the entire LAN trusted in a production sense. Migrating to NAT + Host-only remains a possible lab improvement.
 
-![Developer and administrator sudo checks](../screenshots/users-04-sudo-privileges.jpeg)
+The root script backed up the previously inactive policy before replacing its rules. `ufw status verbose` verified the installed policy, and fresh connections from the management subnet succeeded. No connection from a separate external subnet was simulated, so that specific network test is not claimed.
 
-![SSH AllowUsers configuration](../screenshots/users-05-ssh-allowusers-config.jpeg)
+![Active UFW policy and protected confirmation](../screenshots/users-11-ufw-rules.png)
 
-![SSH service status](../screenshots/users-06-ssh-service-status.jpeg)
+## Safe change and recovery procedure
 
-![Original UID-based account listing](../screenshots/users-07-real-users.jpeg)
+[week2-security.sh](../scripts/week2-security.sh) waits for the external verifier before changing access settings. It records prior state under a root-only backup path and arms a 10-minute rollback before applying SSH/UFW changes. It confirms only after acknowledgement files from independently authenticated devops and admin sessions arrive. Markers use a run-specific token, must have the expected owner, cannot be symlinks, and are never executed as root.
 
-## Remaining acceptance checks
+An earlier run demonstrated the timed rollback when manual confirmation missed the deadline. The revised run returned `WEEK2_SECURITY_CONFIRMED`, cancelled the timer, and retained the tested settings. A subsequent timer listing found no scheduled week-2 rollback. The permission changes from phase 1 are independent of that rollback.
 
-- Resolve shared-write versus owner-write permissions; capture allowed and denied operations.
-- Add the guide's read-only audit role, or document and validate an equivalent model.
-- Test Ed25519 key login in a second session before disabling password authentication.
-- Validate SSH syntax/effective settings, reload, and reconnect.
-- Apply UFW rules for the chosen management subnet and verify access.
-- After Nginx exists, optionally allow only its restart command to an operator and test denial of unrelated sudo commands.
+## Evidence provenance
+
+The four new images are native VirtualBox framebuffer exports without the Windows mouse pointer. The console displays actual saved execution output and independent Windows SSH client results; it does not simulate command prompts or present the images as live captures of the original Windows terminal session. Raw transcripts are retained locally and ignored by Git. The first image shows only permission results so that the earlier pre-hardening SSH/firewall state is not confused with the final state.
+
+## Earlier milestone evidence
+
+These original captures document the earlier exercises. They precede the final changes above.
+
+| Evidence | Original result |
+| --- | --- |
+| [Groups](../screenshots/users-01-groups-created.jpeg) | developers and admins creation |
+| [Accounts](../screenshots/users-02-users-and-ids.jpeg) | Initial account IDs and memberships |
+| [Project layout](../screenshots/users-03-project-structure.jpeg) | Original directory exercise |
+| [Sudo checks](../screenshots/users-04-sudo-privileges.jpeg) | dev denied; admin privileged |
+| [SSH allowlist](../screenshots/users-05-ssh-allowusers-config.jpeg) | Main configuration edit |
+| [SSH service](../screenshots/users-06-ssh-service-status.jpeg) | Active SSH service |
+| [Account report](../screenshots/users-07-real-users.jpeg) | Original UID-based listing |
+
+## Next work
+
+The next documented milestone is [stage 03](03-services-processes.md): Nginx, HTTP tests, processes/logs, controlled recovery, and the optional restricted operator policy. That work will be published separately. Week 1 still has separate baseline/snapshot/timezone evidence tasks in its own document.

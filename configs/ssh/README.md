@@ -1,9 +1,9 @@
 # SSH Configuration
 
-The existing allowlist is documented in [stage 02](../../docs/02-users-permissions.md). A complete verified hardening configuration has not yet been exported from the VM.
+[00-lab-hardening.conf](00-lab-hardening.conf) is installed under `/etc/ssh/sshd_config.d/` on the lab VM. Its contents were compared byte for byte with this local copy after successful protected confirmation.
 
-The planned artifact is `00-lab-hardening.conf`, installed under `/etc/ssh/sshd_config.d/`. After a second key-based session succeeds, the guide calls for disabling password and keyboard-interactive authentication, enabling public keys, and prohibiting root login.
+It disables password and keyboard-interactive authentication, enables public keys, and prohibits root SSH login. The existing main configuration retains `AllowUsers devops admin`. Separate administrative keys were tested from Windows after applying SSH and UFW changes. A password-only attempt and a disallowed dev account were rejected.
 
-Keep a working session and the VirtualBox console available. Check `sudo sshd -t` and the effective configuration with `sudo sshd -T` before reloading and retesting access. The allowlist needs permitted/denied login checks too.
+See [stage 02](../../docs/02-users-permissions.md) for tests, evidence, and rollback behavior. The [security script](../../scripts/week2-security.sh) is specific to this lab and assumes the recorded network, account names, and initially inactive firewall; it is not a generic production installer.
 
-Add the file after testing and document its interaction with the existing `AllowUsers` directive. Never copy private keys or authorized-key contents here.
+Private keys remain outside the repository. Do not copy private keys or authorized_keys contents here.
