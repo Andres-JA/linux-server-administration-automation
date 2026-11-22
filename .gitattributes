@@ -10,3 +10,4 @@
 configs/sudoers/* text eol=lf
 *.png binary
 *.jpeg binary
+configs/project/*.txt text eol=lf

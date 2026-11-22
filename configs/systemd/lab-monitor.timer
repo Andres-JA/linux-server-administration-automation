@@ -1,0 +1,10 @@
+[Unit]
+Description=Run Linux Lab resource monitor every 15 minutes
+
+[Timer]
+OnBootSec=2min
+OnUnitActiveSec=15min
+Unit=lab-monitor.service
+
+[Install]
+WantedBy=timers.target

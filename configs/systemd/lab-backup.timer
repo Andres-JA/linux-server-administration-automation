@@ -1,0 +1,10 @@
+[Unit]
+Description=Run Linux Lab backup daily at 02:00 server local time
+
+[Timer]
+OnCalendar=*-*-* 02:00:00
+Persistent=true
+Unit=lab-backup.service
+
+[Install]
+WantedBy=timers.target
