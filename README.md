@@ -50,13 +50,19 @@ The final daily backup schedule was verified as 02:00 Guayaquil time. Automatic 
 
 ### HTTP service available from Windows
 
+Installed Nginx on Ubuntu and published an English lab page. Opening it in the Windows browser confirmed that the host could reach the VM over the management LAN and that Nginx served the expected content.
+
 ![Actual Nginx page in Brave](screenshots/services-01-nginx-web-page.png)
 
 ### Timer execution and permanent schedules
 
+Configured systemd timers for monitoring and backups, then used temporary short delays to verify that both triggered successful service runs automatically. The capture records those triggers and the permanent schedules after removing the test overrides: monitoring approximately every 15 minutes and backups daily at 02:00 Guayaquil time.
+
 ![Real timer triggers and restored permanent schedule](screenshots/automation-04-timers-active.png)
 
 ### Backup restore and integrity
+
+Backed up `/srv/project/src` and restored a reference file into a separate directory. Comparing the original and restored files returned `diff` exit code 0 and identical SHA256 hashes, confirming that the tested file was recovered without content changes.
 
 ![Matching restore, diff result, and SHA256](screenshots/automation-06-backup-restore.png)
 
