@@ -13,12 +13,18 @@ These scripts target the existing lab accounts, paths, and network. Review [stag
 
 | File | Responsibility | Status |
 | --- | --- | --- |
-| lab-monitor.sh | Resource and Nginx status report | Installed and tested; timer pending |
-| user-report.sh | Local users and lab groups | Pending week 4 |
-| lab-backup.sh | Backup, archive validation, retention | Pending week 4 |
+| [lab-monitor.sh](lab-monitor.sh) | Resource and Nginx status report | Installed; manual/service/timer tests passed |
+| [user-report.sh](user-report.sh) | Local users and lab groups | Installed; read-only execution passed |
+| [lab-backup.sh](lab-backup.sh) | Protected archives, validation, locking, retention | Installed; service/timer, restore, retention and failure tests passed |
 
-[lab-monitor.sh](lab-monitor.sh) is installed and tested both manually and through its oneshot service. Its active and inactive Nginx branches passed during week 3. Scheduling is pending. user-report.sh and lab-backup.sh are not implemented yet. Use LF line endings, quoted paths, Bash error handling, and meaningful VM execution tests. Commit the same contents installed under `/usr/local/bin`. Requirements are in [stage 04](../docs/04-automation.md).
+All three scripts are installed. The monitor's active/inactive branches were tested in week 3, and automatic invocation was verified in week 4. Matching operational copies live under /usr/local/bin with LF line endings. The backup is installed mode 750 and requires root; the reports are mode 755 and run unprivileged. Real archives and raw logs remain outside Git. See [stage 04](../docs/04-automation.md).
 
 ## Completed week-3 deployment
 
 [week3-services.sh](week3-services.sh) installs Nginx, a static connectivity page, the read-only monitor, and its oneshot unit. It adds only the subnet HTTP rule, coordinates Windows-side HTTP checks and a controlled interruption, and tests a restricted operator sudo policy. Privileged execution returned WEEK3_COMPLETE: local and Windows HTTP, controlled failure/recovery, the monitor service, and restricted operator checks passed. Installed script/unit/page/server-block contents match their local copies. The continuation detects fully installed Nginx packages to avoid repeating downloads. The recovery exercise restarts Nginx on unexpected exit. No general passwordless sudo or scheduled monitoring is enabled.
+
+## Completed week-4 deployment
+
+[week4-automation.sh](week4-automation.sh) installed the reports, backup, four systemd units, and English directory reference. It verified a separate restore with diff 0, age-scoped retention in an isolated fixture, expected failure paths, and actual timer-triggered services. Temporary runtime timer overrides were removed before completion. Independent SSH/HTTP and artifact-hash checks allowed the root script to return WEEK4_COMPLETE and CORE_LAB_ACCEPTANCE_PASSED.
+
+The lab installers are deployment/acceptance workflows, not generic production provisioning. Routine backups use lab-backup.service. Ubuntu package upgrades were explicitly left as separately recorded maintenance.

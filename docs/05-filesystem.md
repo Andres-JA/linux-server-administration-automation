@@ -7,7 +7,7 @@
 | State | Meaning |
 | --- | --- |
 | Already documented | Filesystem exercises and 13 original captures are documented. |
-| Remaining | Shared-source permissions reconciled in stage 02; confirm the configuration symlink target during baseline follow-up. |
+| Remaining | Core follow-up complete: shared-source permissions reconciled, symlink target verified, and directory reference translated. |
 | Stage status | Supplementary work; this is not week 5. |
 
 ## Goal and status
@@ -109,6 +109,6 @@ Mount screenshots document inspection of mounts and `/etc/fstab`; they do not es
 
 ![Final tree from the exercise](../screenshots/filesystem-11-final-structure.png)
 
-## Remaining validation
+## Final follow-up
 
-Ownership reconciliation is complete in [stage 02](02-users-permissions.md). Confirm the symlink target exists and translate the on-server structure reference during a later filesystem follow-up. Original captures remain historical evidence.
+Ownership reconciliation is complete in [stage 02](02-users-permissions.md). Final closeout verified that the configuration symlink target exists and installed the matching English [directory reference](../configs/project/README-structure.txt) as /srv/project/README-structure.txt. Original captures remain historical evidence; final automation/recovery results are in [stage 04](04-automation.md).

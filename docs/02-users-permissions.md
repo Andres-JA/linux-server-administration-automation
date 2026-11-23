@@ -9,7 +9,7 @@
 | Completed | Shared development permissions, read-only audit role, allowed/denied access tests, separate SSH keys, SSH hardening, and UFW |
 | Verified | Fresh devops/admin key sessions, rejected password-only login, dev denied by AllowUsers, successful protected confirmation |
 | Evidence | Four new native VM captures linked below; original milestone evidence retained |
-| Next stage | Stage 03 is complete; proceed to [automation and recovery](04-automation.md) |
+| Project status | Services and [automation/recovery](04-automation.md) are now complete |
 
 **Week 2 completed and verified on 2026-11-21.** This is a local VirtualBox lab running Ubuntu Server 26.04.1 LTS.
 
@@ -119,4 +119,4 @@ These original captures document the earlier exercises. They precede the final c
 
 ## Next work
 
-[Stage 03](03-services-processes.md) is now complete: Nginx, subnet-restricted HTTP, process/log inspection, service recovery, and restricted operator sudo were verified. The next implementation stage is [week 4](04-automation.md). Week 1 still has separate baseline/snapshot/timezone evidence tasks in its own document.
+[Stage 03](03-services-processes.md) is now complete: Nginx, subnet-restricted HTTP, process/log inspection, service recovery, and restricted operator sudo were verified. [Week 4](04-automation.md) is now complete, including timers, retention, and verified restoration. The [baseline and recovery checkpoint](01-server-setup.md) were also revalidated during closeout.

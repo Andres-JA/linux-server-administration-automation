@@ -9,9 +9,9 @@
 | Completed | Nginx deployment, Windows HTTP access, process/log inspection, controlled recovery, custom monitor service, and restricted operator sudo |
 | Verified | HTTP 200 before/after outage; connection refused during outage; monitor success; permitted restart and denied unrelated sudo |
 | Evidence | Six new pointer-free captures linked below |
-| Next stage | [Automation and recovery](04-automation.md): user report, backups, timers, and restore verification |
+| Project status | [Automation and recovery](04-automation.md) is also complete |
 
-**Week 3 completed and verified on 2026-11-21.** This milestone is recorded in a local commit on 2026-11-22; it has not been pushed.
+**Week 3 completed and verified on 2026-11-21.** This milestone was recorded in a local commit on 2026-11-22.
 
 ## Goal and environment
 
@@ -89,7 +89,7 @@ Result=success
 ExecMainStatus=0
 ```
 
-Inactive after a completed oneshot is expected. The journal contains the actual resource report and successful completion. No timer or continuous monitoring daemon is installed yet; scheduling belongs to week 4.
+Inactive after a completed oneshot is expected. The journal contains the actual resource report and successful completion. At this stage no timer or continuous monitoring daemon was installed. Week 4 subsequently added and verified periodic scheduling.
 
 ![Manual report and successful oneshot journal](../screenshots/services-05-monitor-service.png)
 
@@ -115,4 +115,4 @@ Systemd unit verification printed warnings about removed CPUAccounting settings 
 
 The first image is a browser-native screenshot of the actual page served to Windows. The other five are native VirtualBox framebuffer exports displaying actual saved privileged-script and Windows-client execution records, with no simulated prompts. Raw logs remain local and ignored by Git. Captures contain no private keys or passwords.
 
-This lab uses HTTP within its management LAN; TLS and internet deployment are outside this stage. Scheduled monitoring, the user-report/backup scripts, daily backup timer, retention checks, and restoration remain in [week 4](04-automation.md).
+This lab uses HTTP within its management LAN; TLS and internet deployment are outside this stage. Scheduled monitoring, the user-report/backup scripts, the daily backup timer, retention checks, and restoration were subsequently completed in [week 4](04-automation.md).

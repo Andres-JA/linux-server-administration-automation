@@ -2,6 +2,17 @@
 
 V01-V03 are the original learning milestones, not semantic version releases. Their original dates were not recorded.
 
+## 2026-11-22 - Core lab completion and week 4 (local commits)
+
+- Installed the user report, root-restricted atomic backup, two services, and both enabled timers; verified matching installed artifact hashes.
+- Set America/Guayaquil timezone and validated actual timer-triggered service executions using temporary runtime verification delays, then removed the overrides and checked permanent schedules.
+- Restored a unique source file separately with diff exit 0 and identical SHA256; validated root-only archives, isolated age-based retention, and failure behavior.
+- Revalidated baseline, SSH/HTTP, roles, firewall, symlink target, and the installed English directory reference.
+- Cancelled a stalled live snapshot; after approved recovery power-off, created a disk-only cold checkpoint and verified the subsequent guest boot/services before automation deployment.
+- Added ten pointer-free final evidence images and completed all four core stage documents; the repository now contains 44 evidence images.
+- Recorded 114 available updates from existing APT metadata; the user chose to keep Ubuntu upgrades as separate maintenance.
+- Created local milestone commits without pushing; private planning, diagnostics, execution logs, credentials, and real archives remain excluded.
+
 ## 2026-11-22 - Week 2 publication
 
 - Published the four permissions, key-login, SSH-hardening, and UFW evidence captures.
@@ -63,7 +74,7 @@ V01-V03 are the original learning milestones, not semantic version releases. The
 - Practiced file searches, disk/inode usage, and mount inspection.
 - Created an on-server structure reference and 13 screenshots.
 
-The later source ownership differs from V02's shared model; reconciliation is pending.
+At this historical milestone, source ownership differed from V02's shared model. It was reconciled during week 2.
 
 ## V02 - User management
 
@@ -74,7 +85,7 @@ The later source ownership differs from V02's shared model; reconciliation is pe
 - Edited SSH configuration with `AllowUsers devops admin` and captured the active service.
 - Captured a UID-based account listing and seven screenshots in total.
 
-Effective SSH policy, key-only login, and firewall checks remain pending.
+Effective SSH policy, key-only login, and firewall checks were not yet verified at this historical milestone; week 2 later completed those checks.
 
 ## V01 - Server setup
 

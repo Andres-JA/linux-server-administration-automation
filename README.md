@@ -1,51 +1,66 @@
 # Linux Server Administration & Automation
 
-Hands-on Ubuntu Server lab demonstrating remote administration, local identity management, Linux permissions, and filesystem operations. SSH hardening, a restricted firewall, Nginx, and a custom systemd monitor are implemented. Scheduled automation and backup recovery are the remaining core stage.
+Hands-on Ubuntu Server lab demonstrating access control, secure remote administration, service troubleshooting, Bash reporting, scheduled backups, and verified recovery.
 
-**Status: in progress. Weeks 2 and 3 are complete.** Access controls, key-only SSH, UFW, Nginx recovery, and the monitor service are implemented and verified. The repository contains 34 screenshots. Scheduled monitoring, backup automation, and restoration remain pending.
+**Core lab completed and verified: 2026-11-22.** Three operational Bash scripts, two systemd services, two timers, and 44 screenshots document the work. A restored file matched its original with diff exit code 0 and identical SHA256 values.
 
 ## Demonstrated skills
 
-| Area | Work documented | Evidence |
+| Area | Verified work | Evidence |
 | --- | --- | --- |
-| Server administration | VirtualBox installation and SSH access from Windows | [Server setup](docs/01-server-setup.md) |
-| Identity and access | Shared source access, read-only audit role, sudo checks, key-only SSH, and restricted UFW | [Users and permissions](docs/02-users-permissions.md) |
-| Filesystem operations | Ownership, setgid, sticky bit, symlinks, file searches, disk and mount inspection | [Filesystem lab](docs/05-filesystem.md) |
-| Service operations | Nginx deployment, process/log inspection, verified HTTP recovery, oneshot monitor, and restricted operator sudo | [Services and processes](docs/03-services-processes.md) |
-| Troubleshooting | Network adapter change to restore connectivity; denied deletion in a sticky-bit directory | [Setup findings](docs/01-server-setup.md#troubleshooting) and [permission test](docs/05-filesystem.md#observed-access-control-test) |
+| Server administration | VirtualBox VM, baseline, SSH, timezone, recovery checkpoint | [01 - Server setup](docs/01-server-setup.md) |
+| Identity and security | Shared development access, read-only auditor, key-only SSH, effective allowlist, restricted UFW | [02 - Users and security](docs/02-users-permissions.md) |
+| Service operations | Nginx HTTP access from Windows, process/log inspection, controlled interruption and recovery, limited operator sudo | [03 - Services and processes](docs/03-services-processes.md) |
+| Automation and recovery | Read-only reports, real timer triggers, protected backups, scoped retention, matching restore | [04 - Automation and recovery](docs/04-automation.md) |
+| Filesystem operations | Setgid, sticky bit, symlinks, searches, disk/inode and mount inspection | [Additional filesystem lab](docs/05-filesystem.md) |
 
-## Lab environment
+## Lab architecture
 
 ```text
-Windows host (PowerShell / SSH client)
+Windows host (OpenSSH / browser / VirtualBox)
     |
-    | Local network through a bridged VirtualBox adapter
+    | Bridged local management LAN: 192.168.100.0/24
     v
-Ubuntu Server 26.04 LTS VM
-    |-- devops: administrative account
-    |-- dev / cloud / admin: role-based test accounts
-    `-- /srv/project: permissions and filesystem exercises
+Ubuntu Server 26.04.1 LTS - linux-server
+    |-- SSH: keys only; devops/admin allowlist
+    |-- Nginx: subnet-restricted HTTP test page
+    |-- Monitor: read-only oneshot + approximately 15-minute timer
+    `-- Backup: root-only source archives + daily 02:00 timer
 ```
 
-Recorded resources: 2 GB RAM and a 25 GB virtual disk. Hostname: `linux-server`.
+Configured resources: 2 vCPU, 2 GB RAM, 25 GB VDI. Server timezone: America/Guayaquil. The guide's Ubuntu 24.04/NAT + Host-only baseline was adapted to the existing Ubuntu 26.04/bridged lab and `/srv/project` paths; the actual differences and test results are documented.
 
-The reference guide uses Ubuntu 24.04, NAT + Host-only, and `/srv/lab`. This repository preserves the existing 26.04 lab, bridged network, account names, and `/srv/project` paths. The final access policy is documented and tested in stage 02; the management subnet is the local bridged LAN.
+**Technologies:** Ubuntu Server, VirtualBox, OpenSSH, UFW, Nginx, Bash, systemd, GNU tar, SHA256, Git.
 
-**Tools used:** Ubuntu Server, VirtualBox, OpenSSH, UFW, Nginx, Bash, Linux filesystem utilities, systemd, Git. Scheduled monitoring and backups belong to the remaining scope.
+## Validation results
 
-## Documentation and progress
+| Test | Result |
+| --- | --- |
+| Administrative key login | Fresh devops/admin connections succeeded with separate keys |
+| Denied access | Password-only SSH, disallowed developer SSH, auditor writes, and unrelated operator sudo were rejected |
+| Web recovery | Windows HTTP 200 before/after a controlled outage; connection refused while Nginx was stopped |
+| Service reporting | Manual and systemd monitor execution succeeded |
+| Scheduling | Both enabled timers generated real service invocations; temporary test overrides were removed |
+| Backup recovery | Protected compressed archive restored separately; diff 0 and matching file hashes |
+| Retention | Aged matching fixture removed; unrelated file/directory preserved |
 
-**Next guide stage: week 4.** Weeks 2 and 3 are verified. Week 1 still has baseline/snapshot/timezone evidence tasks. Chapter 05 is supplementary filesystem work, not a fifth week.
+The final daily backup schedule was verified as 02:00 Guayaquil time. Automatic execution was exercised with documented temporary runtime delays; the session did not wait overnight or claim to observe a future daily run.
 
-Week-2/3 deployment scripts, tested SSH/Nginx/operator configurations, the monitor script, and its oneshot unit now exist. The user-report/backup scripts, backup unit, and both scheduling timers remain pending.
+## Selected evidence
 
-| Stage | Scope | Status |
-| --- | --- | --- |
-| [01 - Server setup](docs/01-server-setup.md) | VM, networking, remote access | Existing setup documented; full baseline checks remain |
-| [02 - Users, permissions and security](docs/02-users-permissions.md) | Accounts, sudo, SSH, firewall | Completed and verified, with new evidence |
-| [03 - Services and processes](docs/03-services-processes.md) | Nginx, logs, recovery, monitor, limited sudo | Completed and verified, with six new captures |
-| [04 - Automation and recovery](docs/04-automation.md) | Bash, timers, backup restoration | Monitor prerequisite complete; scheduling/recovery pending |
-| [05 - Filesystem operations](docs/05-filesystem.md) | Additional original exercises | Documented; shared-source permissions reconciled in stage 02 |
+### HTTP service available from Windows
+
+![Actual Nginx page in Brave](screenshots/services-01-nginx-web-page.png)
+
+### Timer execution and permanent schedules
+
+![Real timer triggers and restored permanent schedule](screenshots/automation-04-timers-active.png)
+
+### Backup restore and integrity
+
+![Matching restore, diff result, and SHA256](screenshots/automation-06-backup-restore.png)
+
+The browser capture renders the real server page. Console captures display actual saved execution records, without simulated prompts or the Windows mouse pointer. Stage documents contain the full evidence and provenance.
 
 ## Repository layout
 
@@ -53,42 +68,30 @@ Week-2/3 deployment scripts, tested SSH/Nginx/operator configurations, the monit
 .
 |-- README.md
 |-- CHANGELOG.md
-|-- docs/                 # Four guide stages + original filesystem lab
-|-- scripts/              # Tested week-2/3 scripts and resource monitor
+|-- docs/                   # Four core stages + filesystem extension
+|-- scripts/
+|   |-- lab-monitor.sh
+|   |-- user-report.sh
+|   |-- lab-backup.sh
+|   `-- week*-*.sh          # Lab deployment and acceptance workflows
 |-- configs/
-|   |-- ssh/              # Tested SSH hardening
-|   |-- nginx/            # Installed site and HTTP test page
-|   |-- sudoers/          # Exact Nginx operator restart policy
-|   `-- systemd/          # Tested monitor unit; future timers
-|-- screenshots/          # Original evidence with English filenames
-`-- .gitignore
+|   |-- ssh/
+|   |-- nginx/
+|   |-- sudoers/
+|   |-- project/
+|   `-- systemd/            # Two services and two timers
+`-- screenshots/            # 44 documented evidence images
 ```
 
-## Selected evidence
+Linux scripts/configurations retain LF line endings. Installed operational scripts, units, and the on-server English directory reference were checked against their local SHA256 values. See the [change history](CHANGELOG.md) for implementation and publication milestones.
 
-### HTTP service available from Windows
+## Engineering findings and scope
 
-![Actual Nginx lab page rendered in Brave](screenshots/services-01-nginx-web-page.png)
+- Setgid supplies group inheritance; file modes and umask still determine shared write access.
+- A successful oneshot normally becomes inactive after it exits. The result, exit status, and journal establish success.
+- Recovery requires more than a readable archive: a separate restore and content comparison verified this backup.
+- The live snapshot attempt stalled; an approved recovery restart and a disk-only cold checkpoint were used. Boot, services, SSH, and later automation were verified separately.
 
-### SSH access controls
+This is a local learning lab. Backups are stored within the VM, HTTP is limited to the management LAN, and off-host storage/alerting/cloud deployment are optional extensions. **114 available package updates were recorded from the existing APT metadata at closeout; Ubuntu upgrades were intentionally deferred as a separate maintenance task.** Completion refers to the core lab acceptance tests, not production readiness or a fully patched OS.
 
-![Effective SSH settings and denied access](screenshots/users-10-ssh-hardening.png)
-
-### Controlled outage and recovery
-
-![Windows HTTP before, during, and after the Nginx interruption](screenshots/services-04-service-recovery.png)
-
-Full evidence is linked from each stage. The page capture is browser-native; console captures display actual saved execution records. Each stage documents provenance. Original milestone captures retain their original language and output.
-
-## Engineering findings
-
-- Setgid controls group inheritance. File modes and umask still determine group write access.
-- The later filesystem exercise had removed developer write access. Week 2 reconciled it to `2770 devops:developers` and verified both shared writes and denied audit writes.
-- SSH account allowlisting, key authentication, and firewall rules were validated separately. A timed rollback protected the change; only successful external key checks allowed confirmation.
-- Nginx recovery was checked from both the guest and Windows: HTTP 200, refused connection while stopped, then HTTP 200 again. A completed monitor oneshot reports inactive with a successful exit.
-
-## Scope and verification
-
-This is a local learning lab. Original screenshots document prior milestones. Week-2/3 scripts were executed on the VM, with independent SSH/HTTP checks and real failure/recovery tests. Stage 04 clearly separates the completed monitor prerequisite from pending timers/backups.
-
-Keep passwords, private keys, environment secrets, and real backup archives outside Git. See the [change history](CHANGELOG.md) for the original milestones and repository reorganization.
+Passwords, private keys, real backup archives, raw execution logs, and personal planning files are excluded from Git.

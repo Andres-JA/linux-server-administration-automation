@@ -7,12 +7,12 @@
 | State | Meaning |
 | --- | --- |
 | Already documented | VM installation and remote SSH login are documented. |
-| Remaining | Complete baseline, network, timezone, package-update, and SSH-status evidence. |
-| Stage status | Existing setup; verification remaining. |
+| Remaining | Baseline, connectivity, timezone, and recovery-checkpoint evidence are complete; package upgrades are recorded separately as deferred maintenance. |
+| Stage status | Baseline revalidated and core acceptance complete on 2026-11-22. |
 
 ## Goal and status
 
-Deploy a Linux VM and administer it remotely from Windows. The existing lab records successful SSH access. Additional baseline captures are needed to satisfy the full guide checklist.
+Deploy a Linux VM and administer it remotely from Windows. The original setup is preserved below. Current OS/network/resource checks, fresh SSH access, timezone, and a recovery checkpoint were revalidated during final closeout.
 
 ## Recorded environment
 
@@ -38,7 +38,7 @@ The guide's Ubuntu 24.04 and NAT + Host-only configuration is a reference baseli
 4. Installed OpenSSH during setup.
 5. Connected from Windows using `ssh devops@<VM_IP>`.
 
-The captures demonstrate the VM, initial terminal commands, and remote login. Package-update completion and a full hardware/network baseline need additional explicit evidence.
+The original captures demonstrate the VM, initial commands, and remote login. Current baseline evidence and the explicit package-maintenance decision are documented in the final sections below.
 
 ## Command reference
 
@@ -74,16 +74,32 @@ These commands summarize the original exercises; replace `<VM_IP>` with the curr
 
 The VirtualBox Manager shows `linux-server` running with 2 processors, 2048 MB RAM, a 25 GB VDI, and a bridged network adapter. This screenshot verifies the hypervisor settings; it does not verify the current guest operating system release, SSH security policy, or firewall state.
 
-The selected VirtualBox OS profile reads Ubuntu 25.04. That profile is metadata, not a guest OS check. Confirm the installed release with `/etc/os-release` before changing the recorded Ubuntu 26.04 result from the original SSH capture.
+The selected VirtualBox OS profile reads Ubuntu 25.04. That profile is metadata, not the installed OS. Guest checks confirmed Ubuntu 26.04.1 LTS; the historical record was not replaced with the profile label.
 
 ![Current running VM and VirtualBox configuration](../screenshots/setup-04-current-vm-configuration.png)
 
 A later direct SSH connection using the dedicated lab Ed25519 key succeeded. Read-only checks confirmed hostname `linux-server`, Ubuntu 26.04.1 LTS, and the administrative account `devops`. The earlier authentication failure was resolved by authorizing the public key. No guest security settings were changed during these checks.
 
-## Remaining validation
+## Final baseline and connectivity
 
-- Capture `hostnamectl`, `cat /etc/os-release`, `ip -br addr`, `ip route`, `free -h`, and `df -h /` as a current baseline.
-- Create and record a baseline VirtualBox snapshot. CPU, RAM, disk, and adapter settings are captured above.
-- Confirm the management network. If adopting NAT + Host-only, capture the new configuration and retest access.
-- Verify `systemctl is-active ssh`, package update completion, and `timedatectl` with the intended timezone.
-- Capture `whoami` and `hostname` inside a fresh remote session.
+On 2026-11-22, the installer recorded hostname, OS/kernel, CPU count, memory, filesystem capacity, IPv4 interfaces/routes, service states, and effective SSH/UFW policy. Fresh independent devops/admin key sessions and Windows HTTP succeeded.
+
+The server timezone is America/Guayaquil with clock synchronization active. Nginx and SSH are active; both operational timers are enabled and active. The capture's four service-state lines correspond to ssh, nginx, lab-monitor.timer, and lab-backup.timer.
+
+![Final system/network and maintenance checkpoint](../screenshots/setup-05-system-baseline.png)
+
+![Independent SSH and HTTP connectivity](../screenshots/setup-06-final-connectivity.png)
+
+## Recovery checkpoint and observed incident
+
+The running-VM snapshot attempt stalled while saving state. It was cancelled through VirtualBox's cancelable progress API. The guest did not regain network connectivity or respond to an ACPI shutdown request. With explicit user authorization it was powered off and restarted, after taking the disk-only cold checkpoint `pre-week4-cold-2026-11-22` (UUID e28659c4-73e6-4ee5-9a28-fb6de64424eb).
+
+The guest then booted, and SSH/Nginx were verified before week-4 installation. Automation, archive recovery, and final connectivity checks subsequently passed. This is a closeout recovery checkpoint after a forced shutdown, not a claim that the original installation snapshot was recorded or that full VM snapshot restoration was tested. The cause of the live-snapshot stall was not established.
+
+![Recorded VirtualBox cold checkpoint](../screenshots/setup-07-recovery-snapshot.png)
+
+## Package maintenance decision
+
+The original notes record package preparation during installation, and the week-3 package transaction installed current Nginx packages from the configured repositories. At final closeout, existing APT metadata listed 114 available package updates. The user explicitly chose to record those as separate maintenance instead of performing an Ubuntu upgrade.
+
+The core baseline/automation tests are complete; the lab is not represented as fully patched. Future maintenance should refresh metadata, review/apply updates, and recheck access/services. The existing bridged topology is intentional; a future NAT + Host-only change would require revalidating IP/subnet-based rules.
