@@ -1,95 +1,36 @@
 # Changelog
 
-V01-V03 are the original learning milestones, not semantic version releases. Their original dates were not recorded.
+Major implementation and validation milestones. Detailed commands and evidence are linked from the [README](README.md).
 
-## 2026-11-22 - Core lab completion and week 4 (local commits)
+## 2026-11-23 - Portfolio documentation
 
-- Installed the user report, root-restricted atomic backup, two services, and both enabled timers; verified matching installed artifact hashes.
-- Set America/Guayaquil timezone and validated actual timer-triggered service executions using temporary runtime verification delays, then removed the overrides and checked permanent schedules.
-- Restored a unique source file separately with diff exit 0 and identical SHA256; validated root-only archives, isolated age-based retention, and failure behavior.
-- Revalidated baseline, SSH/HTTP, roles, firewall, symlink target, and the installed English directory reference.
-- Cancelled a stalled live snapshot; after approved recovery power-off, created a disk-only cold checkpoint and verified the subsequent guest boot/services before automation deployment.
-- Added ten pointer-free final evidence images and completed all four core stage documents; the repository now contains 44 evidence images.
-- Recorded 114 available updates from existing APT metadata; the user chose to keep Ubuntu upgrades as separate maintenance.
-- Created local milestone commits without pushing; private planning, diagnostics, execution logs, credentials, and real archives remain excluded.
+- Published the completed lab and explained the HTTP, scheduling, and restore evidence in the README.
+- Condensed the project history into technical milestones.
 
-## 2026-11-22 - Week 2 publication
+## 2026-11-22 - Week 4: Automation and recovery
 
-- Published the four permissions, key-login, SSH-hardening, and UFW evidence captures.
-- Published tested week-2 scripts, matching SSH configuration, and English access-control documentation.
-- Updated the public README to the week-2 checkpoint; implementation was verified on 2026-11-21.
-- Kept week-3 implementation and evidence local for a later publication.
+- Completed three Bash scripts, two systemd services, and two timers for reporting, monitoring, and protected backups.
+- Verified automatic service execution with temporary test delays, then restored the permanent schedules: monitoring approximately every 15 minutes and backups daily at 02:00 America/Guayaquil.
+- Restored a backup file separately with diff exit code 0 and matching SHA256 hashes; tested scoped retention and rejected invalid or unauthorized backup attempts.
+- Revalidated the baseline and installed-file hashes, created a cold VM checkpoint after recovery from a stalled live snapshot, and completed the English documentation with 44 evidence images.
+- Recorded 114 available Ubuntu updates as deferred maintenance; core completion does not imply a fully patched system.
 
-## 2026-11-21 - Week 3 services and processes
+## 2026-11-21 - Week 3: Services and troubleshooting
 
-- Installed Nginx and a root-owned English HTTP fixture; retained SSH restrictions and allowed HTTP only from the lab subnet.
-- Verified exact page content and HTTP 200 from Windows, refused connections during a controlled stop, and successful HTTP recovery.
-- Recorded master/worker processes, listeners, and journal transitions.
-- Installed and tested the read-only Bash monitor and hardened devops oneshot unit; verified Result=success and ExecMainStatus=0.
-- Added a locked operator role with only the exact Nginx restart sudo command; permitted/denied tests passed.
-- Preserved the interrupted initial package-install output; continuation detects fully installed packages and skips duplicate downloads.
-- Added six pointer-free captures, installed-file documentation, and updated private progress tracking. Timers, backup/report scripts, and restoration remain week 4.
-- Added line-ending attributes for Linux scripts/configuration so Windows checkouts retain executable Bash-compatible LF files.
-- Recorded in a local commit on 2026-11-22; no push for this milestone.
+- Deployed Nginx and verified the English lab page from Windows, with HTTP restricted to the management subnet.
+- Tested a controlled outage and recovery, inspected processes and logs, and validated the monitor service.
+- Granted the operator only the exact Nginx restart command; unrelated sudo commands were denied.
 
-## 2026-11-21 - Week 2 access and security
+## 2026-11-21 - Week 2: Access and security
 
-- Reconciled source access to devops:developers mode 2770; added auditors with read-only audit access.
-- Executed permitted/denied permission tests and verified sudo denial for dev/auditor.
-- Installed matching SSH hardening with separate administrative keys; verified fresh devops/admin sessions, rejected password-only access, and journal-confirmed AllowUsers denial.
-- Enabled default-deny incoming UFW with SSH allowed from the actual bridged lab subnet.
-- Demonstrated timed rollback, then confirmed the revised change after independent key checks; verified no rollback timer remained scheduled.
-- Added four pointer-free native VM captures of actual execution records plus a current VM-configuration capture; updated public English documentation and private task tracking.
-- Week-2 implementation and evidence were published on 2026-11-22.
+- Reconciled shared development permissions and read-only audit access; verified allowed and denied operations.
+- Hardened SSH with separate administrative keys, disabled password/root login, and tested the user allowlist.
+- Enabled subnet-restricted UFW rules and confirmed access after testing the timed rollback safeguard.
 
-## 2026-11-21 - Progress clarification
+## Initial milestones - Server and filesystem foundations
 
-- Added completed-versus-remaining summaries to all five technical chapters.
-- Clarified that the current guide stage is week 2, that stage 03/04 documents are plans, and that chapter 05 is supplementary work.
-- Clarified that requirements directories do not yet contain implemented scripts or service units.
-- Excluded PDF copies of the private guide and task checklist from version control.
+Original implementation dates were not recorded.
 
-## 2026-11-21 - Portfolio organization
-
-### Changed
-
-- Moved setup, account, and filesystem notes into `docs/`.
-- Consolidated 23 screenshots into `screenshots/` with English names and stage prefixes, preserving original image contents.
-- Rewrote public documentation in English with demonstrated skills, evidence links, actual environment differences, and explicit status.
-- Preserved Ubuntu 26.04, bridged networking, existing accounts, and `/srv/project` paths.
-- Explained the differing permissions between the account and filesystem exercises.
-
-### Added
-
-- Planned-stage documents for services/processes and automation/recovery.
-- Delivery requirements under `scripts/`, `configs/ssh/`, and `configs/systemd/`.
-- Ignore rules for private planning, credentials, archives, and runtime output.
-
-## V03 - Filesystem operations
-
-- Extended `/srv/project/` with source, configuration, logs, backups, and temporary directories.
-- Applied modes including `755`, `750`, `700`, and `1777`.
-- Captured denied deletion of another user's file in a sticky-bit directory.
-- Linked project configuration to `/etc/project/app.conf`.
-- Practiced file searches, disk/inode usage, and mount inspection.
-- Created an on-server structure reference and 13 screenshots.
-
-At this historical milestone, source ownership differed from V02's shared model. It was reconciled during week 2.
-
-## V02 - User management
-
-- Created `developers` and `admins` groups and `dev`, `cloud`, and `admin` accounts.
-- Assigned supplementary groups and organized `/srv/project/`.
-- Applied shared directory permissions and setgid; the original notes record group-inheritance checks.
-- Captured sudo denial for `dev` and sudo access for `admin`.
-- Edited SSH configuration with `AllowUsers devops admin` and captured the active service.
-- Captured a UID-based account listing and seven screenshots in total.
-
-Effective SSH policy, key-only login, and firewall checks were not yet verified at this historical milestone; week 2 later completed those checks.
-
-## V01 - Server setup
-
-- Installed Ubuntu Server 26.04 LTS in VirtualBox with `devops` and hostname `linux-server`.
-- Recorded initial package preparation and OpenSSH installation.
-- Connected from Windows using SSH and captured three screenshots.
-- Changed NAT to bridged networking after an address/connectivity issue. SSH subsequently succeeded; the underlying DHCP cause was not established.
+- Installed Ubuntu Server in VirtualBox and established SSH access from Windows using the existing bridged network.
+- Created users, groups, and the `/srv/project` directory structure; practiced setgid, sticky-bit protection, symlinks, and filesystem inspection.
+- Organized the repository into English documentation, scripts, configurations, and consistently named screenshots; excluded credentials, real archives, and local logs from Git.
